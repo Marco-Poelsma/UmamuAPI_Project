@@ -2,6 +2,7 @@ import Foundation
 
 struct APIService {
 
+    // MARK: - Sparks
     static func fetchSparks(
         urlString: String,
         completion: @escaping (Result<[Spark], APIError>) -> Void
@@ -37,6 +38,44 @@ struct APIService {
                 completion(.failure(.decodingFailed(error)))
             }
 
+        }.resume()
+    }
+
+
+    // MARK: - Umamusume
+    static func fetchUmamusumes(
+        urlString: String,
+        completion: @escaping (Result<[Umamusume], APIError>) -> Void
+    ) {
+
+        guard let url = URL(string: urlString) else {
+            completion(.failure(.invalidURL))
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(.urlSessionError(error)))
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                completion(.failure(.invalidResponse))
+                return
+            }
+
+            guard let data = data else {
+                completion(.failure(.invalidResponse))
+                return
+            }
+
+            do {
+                let wrapper = try JSONDecoder().decode(UmamusumeResponse.self, from: data)
+                completion(.success(wrapper.properties))
+            } catch {
+                completion(.failure(.decodingFailed(error)))
+            }
         }.resume()
     }
 }
