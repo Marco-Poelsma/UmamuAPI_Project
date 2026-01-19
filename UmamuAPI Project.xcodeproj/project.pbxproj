@@ -16,6 +16,8 @@
 		EFB5EFF02F1E8092008F0849 /* APIConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFEF2F1E8092008F0849 /* APIConnection.swift */; };
 		EFB5EFF52F1E823E008F0849 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFF42F1E823E008F0849 /* APIService.swift */; };
 		EFB5EFFF2F1E876D008F0849 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFFE2F1E876D008F0849 /* APIError.swift */; };
+		EFB5F0032F1E8D37008F0849 /* SparkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F0022F1E8D37008F0849 /* SparkViewModel.swift */; };
+		EFB5F0082F1E8DB8008F0849 /* SparkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F0072F1E8DB8008F0849 /* SparkListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		EFB5EFEF2F1E8092008F0849 /* APIConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConnection.swift; sourceTree = "<group>"; };
 		EFB5EFF42F1E823E008F0849 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		EFB5EFFE2F1E876D008F0849 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		EFB5F0022F1E8D37008F0849 /* SparkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkViewModel.swift; sourceTree = "<group>"; };
+		EFB5F0072F1E8DB8008F0849 /* SparkListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +100,7 @@
 		EFB5EFE72F1E7877008F0849 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				EFB5F0072F1E8DB8008F0849 /* SparkListView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -104,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				EFB5EFEF2F1E8092008F0849 /* APIConnection.swift */,
+				EFB5F0022F1E8D37008F0849 /* SparkViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -179,8 +185,10 @@
 			files = (
 				EFB5EFEA2F1E7906008F0849 /* Umamusume.swift in Sources */,
 				EF3026972F1E75FA00C74085 /* ContentView.swift in Sources */,
+				EFB5F0082F1E8DB8008F0849 /* SparkListView.swift in Sources */,
 				EF3026952F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift in Sources */,
 				EFB5EFF02F1E8092008F0849 /* APIConnection.swift in Sources */,
+				EFB5F0032F1E8D37008F0849 /* SparkViewModel.swift in Sources */,
 				EFB5EFF52F1E823E008F0849 /* APIService.swift in Sources */,
 				EFB5EFED2F1E791C008F0849 /* Spark.swift in Sources */,
 				EFB5EFFF2F1E876D008F0849 /* APIError.swift in Sources */,

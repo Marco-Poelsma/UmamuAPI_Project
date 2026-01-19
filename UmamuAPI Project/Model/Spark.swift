@@ -1,23 +1,19 @@
-//
-//  Spark.swift
-//  UmamuAPI Project
-//
-//  Created by alumne on 19/01/2026.
-//
-
 import Foundation
 
-struct Spark{
-    let id: UInt
-    var name: String
-    var rarity: UInt8
-    var description: String
-    var type: SparkType
+struct Spark: Codable {
+    let id: Int
+    let name: String
+    let description: String
+    let type: SparkType
 }
 
-enum SparkType: String {
-    case stat = "STAT"
-    case aptitude = "APTITUDE"
-    case skill = "SKILL"
-    case uniqueSkill = "UNIQUE_SKILL"
+enum SparkType: String, Codable {
+    case stat = "stat"
+    case aptitude = "aptitude"
+    case skill = "skill"
+    case uniqueSkill = "unique_skill"
+}
+
+struct SparkResponse: Codable {
+    let sparks: [Spark]
 }

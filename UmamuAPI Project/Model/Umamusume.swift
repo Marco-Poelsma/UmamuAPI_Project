@@ -11,6 +11,7 @@ struct Umamusume{
     let id: UInt
     var name: String
     var sparks: [Spark]
+    var sparksRarity: [UInt8]
     var inspiration1: UInt
     var inspiration2: UInt
     var favourite: Bool
