@@ -6,9 +6,10 @@
 //
 
 import Foundation
+
 struct APIService{
     
-    static func fetchBreeds(urlString: String,completion: @escaping(Result<[Breed],APIError>)->Void){
+    static func fetchSparks(urlString: String,completion: @escaping(Result<[Spark],APIError>)->Void){
             
             guard let url = URL(string: urlString) else{
                 completion(Result.failure(APIError.invalidURL))
@@ -29,8 +30,8 @@ struct APIService{
                 
                 if let dataResponse = data{
                     do{
-                        let breeds = try JSONDecoder().decode([Breed].self, from: dataResponse)
-                        completion(Result.success(breeds))
+                        let sparks = try JSONDecoder().decode([Spark].self, from: dataResponse)
+                        completion(Result.success(sparks))
                     }catch{
                         completion(Result.failure(APIError.decodingFailed(error)))
                     }
