@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF15D31D2F27B77A000BDEC8 /* UmamusumeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF15D31C2F27B77A000BDEC8 /* UmamusumeViewModel.swift */; };
 		EF3026952F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3026942F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift */; };
 		EF3026972F1E75FA00C74085 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3026962F1E75FA00C74085 /* ContentView.swift */; };
 		EF3026992F1E75FB00C74085 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF3026982F1E75FB00C74085 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF15D31C2F27B77A000BDEC8 /* UmamusumeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumeViewModel.swift; sourceTree = "<group>"; };
 		EF3026912F1E75FA00C74085 /* UmamuAPI Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UmamuAPI Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF3026942F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamuAPI_ProjectApp.swift; sourceTree = "<group>"; };
 		EF3026962F1E75FA00C74085 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 			children = (
 				EFB5EFF42F1E823E008F0849 /* APIService.swift */,
 				EFB5EFFE2F1E876D008F0849 /* APIError.swift */,
+				EF15D31C2F27B77A000BDEC8 /* UmamusumeViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 				EFB5F01B2F1E96EB008F0849 /* UmamusumeListView.swift in Sources */,
 				EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */,
 				EFB5EFF52F1E823E008F0849 /* APIService.swift in Sources */,
+				EF15D31D2F27B77A000BDEC8 /* UmamusumeViewModel.swift in Sources */,
 				EFB5EFED2F1E791C008F0849 /* Spark.swift in Sources */,
 				EFB5F0182F1E95FA008F0849 /* SparkResponse.swift in Sources */,
 				EFB5EFFF2F1E876D008F0849 /* APIError.swift in Sources */,

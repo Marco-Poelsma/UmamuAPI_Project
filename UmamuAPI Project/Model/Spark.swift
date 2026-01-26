@@ -1,6 +1,6 @@
 import Foundation
 
-struct Spark: Codable {
+struct Spark: Codable, Identifiable {
     let id: Int
     let name: String
     let description: String

@@ -2,69 +2,53 @@ import SwiftUI
 
 struct UmamusumeListView: View {
 
-    @State private var list: [Umamusume] = []
-    @State private var isLoading = true
-    @State private var errorMessage: String?
+    @StateObject private var vm = UmamusumeViewModel()
 
     var body: some View {
         NavigationView {
-            Group {
-                if isLoading {
-                    ProgressView("Cargando umamusumes...")
-                } else if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                } else {
-                    List(list) { u in
-                        VStack(alignment: .leading, spacing: 8) {
+            List(vm.umamusumes) { u in
+                VStack(alignment: .leading, spacing: 8) {
 
-                            Text(u.name)
-                                .font(.headline)
+                    // 🐴 Nombre Umamusume
+                    Text(u.name)
+                        .font(.headline)
 
-                            // Sparks
-                            VStack(alignment: .leading, spacing: 4) {
-                                ForEach(u.sparks) { spark in
-                                    HStack {
-                                        Text("Spark \(spark.spark)")
-                                        Spacer()
-                                        Text("⭐️ \(spark.rarity)")
-                                    }
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
+                    // ✨ Sparks con nombre + rareza
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(u.sparks) { sparkRef in
+                            if let spark = vm.sparkByID[sparkRef.spark] {
+                                HStack {
+                                    Text(spark.name)
+                                    Spacer()
+                                    Text("⭐️ \(sparkRef.rarity)")
                                 }
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
                             }
-
-                            Text("Insp 1: \(u.inspirationID1) • Insp 2: \(u.inspirationID2)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
                         }
-                        .padding(.vertical, 6)
+                    }
+
+                    // 💡 Inspiraciones con nombre
+                    HStack {
+                        Text("Inspiración:")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        Text(vm.umamusumeByID[u.inspirationID1]?.name ?? "—")
+                            .font(.caption)
+
+                        Text("•")
+
+                        Text(vm.umamusumeByID[u.inspirationID2]?.name ?? "—")
+                            .font(.caption)
                     }
                 }
+                .padding(.vertical, 6)
             }
             .navigationTitle("🐴 Umamusume")
         }
         .onAppear {
-            loadUmamusumes()
-        }
-    }
-
-    private func loadUmamusumes() {
-        APIService.fetchUmamusumes(
-            urlString: "https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/umamusume.data.json"
-        ) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let list):
-                    self.list = list
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
-                    self.isLoading = false
-                }
-            }
+            vm.loadData()
         }
     }
 }
