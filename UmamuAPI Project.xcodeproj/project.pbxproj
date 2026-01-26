@@ -13,10 +13,8 @@
 		EF30269C2F1E75FB00C74085 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF30269B2F1E75FB00C74085 /* Preview Assets.xcassets */; };
 		EFB5EFEA2F1E7906008F0849 /* Umamusume.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFE92F1E7906008F0849 /* Umamusume.swift */; };
 		EFB5EFED2F1E791C008F0849 /* Spark.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFEC2F1E791C008F0849 /* Spark.swift */; };
-		EFB5EFF02F1E8092008F0849 /* APIConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFEF2F1E8092008F0849 /* APIConnection.swift */; };
 		EFB5EFF52F1E823E008F0849 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFF42F1E823E008F0849 /* APIService.swift */; };
 		EFB5EFFF2F1E876D008F0849 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFFE2F1E876D008F0849 /* APIError.swift */; };
-		EFB5F0032F1E8D37008F0849 /* SparkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F0022F1E8D37008F0849 /* SparkViewModel.swift */; };
 		EFB5F0082F1E8DB8008F0849 /* SparkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F0072F1E8DB8008F0849 /* SparkListView.swift */; };
 		EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F0102F1E94F4008F0849 /* UmamusumeResponse.swift */; };
 		EFB5F0182F1E95FA008F0849 /* SparkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F0172F1E95FA008F0849 /* SparkResponse.swift */; };
@@ -32,10 +30,8 @@
 		EF30269D2F1E75FB00C74085 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EFB5EFE92F1E7906008F0849 /* Umamusume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Umamusume.swift; sourceTree = "<group>"; };
 		EFB5EFEC2F1E791C008F0849 /* Spark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spark.swift; sourceTree = "<group>"; };
-		EFB5EFEF2F1E8092008F0849 /* APIConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConnection.swift; sourceTree = "<group>"; };
 		EFB5EFF42F1E823E008F0849 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		EFB5EFFE2F1E876D008F0849 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
-		EFB5F0022F1E8D37008F0849 /* SparkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkViewModel.swift; sourceTree = "<group>"; };
 		EFB5F0072F1E8DB8008F0849 /* SparkListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkListView.swift; sourceTree = "<group>"; };
 		EFB5F0102F1E94F4008F0849 /* UmamusumeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumeResponse.swift; sourceTree = "<group>"; };
 		EFB5F0172F1E95FA008F0849 /* SparkResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkResponse.swift; sourceTree = "<group>"; };
@@ -117,8 +113,6 @@
 		EFB5EFE82F1E787C008F0849 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				EFB5EFEF2F1E8092008F0849 /* APIConnection.swift */,
-				EFB5F0022F1E8D37008F0849 /* SparkViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -197,8 +191,6 @@
 				EFB5F0082F1E8DB8008F0849 /* SparkListView.swift in Sources */,
 				EF3026952F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift in Sources */,
 				EFB5F01B2F1E96EB008F0849 /* UmamusumeListView.swift in Sources */,
-				EFB5EFF02F1E8092008F0849 /* APIConnection.swift in Sources */,
-				EFB5F0032F1E8D37008F0849 /* SparkViewModel.swift in Sources */,
 				EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */,
 				EFB5EFF52F1E823E008F0849 /* APIService.swift in Sources */,
 				EFB5EFED2F1E791C008F0849 /* Spark.swift in Sources */,
