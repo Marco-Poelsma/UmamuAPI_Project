@@ -3,6 +3,18 @@ import SwiftUI
 struct UmamusumeListView: View {
 
     @StateObject private var vm = UmamusumeViewModel()
+    @State private var searchText = ""
+
+    var filteredUmamusumes: [Umamusume] {
+        if searchText.isEmpty {
+            return vm.umamusumes
+        } else {
+            return vm.umamusumes.filter {
+                $0.name.lowercased().contains(searchText.lowercased()) ||
+                String($0.id).contains(searchText)
+            }
+        }
+    }
 
     var body: some View {
         NavigationView {
@@ -10,28 +22,57 @@ struct UmamusumeListView: View {
                 Color(UIColor.systemGroupedBackground)
                     .ignoresSafeArea()
 
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(vm.umamusumes) { u in
-                            StyledRowView(
-                                title: u.name,
-                                id: u.id,
-                                showsFavorite: true,
-                                accessory: .detailsWithFavorite,
-                                onAccessoryTap: {
-                                    print("Detalles de \(u.name)")
-                                },
-                                onFavoriteTap: {
-                                    print("Marcada \(u.name) como favorita")
-                                }
-                            )
-                            Divider()
+                VStack(spacing: 0) {
+
+                    // Corner radius compartido
+                    let radius: CGFloat = 20
+
+                    // MARK: - BARRA DE BÚSQUEDA
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+
+                        TextField("Buscar por nombre o ID...", text: $searchText)
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
+
+                        if !searchText.isEmpty {
+                            Button(action: { searchText = "" }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
+                            }
                         }
                     }
+                    .padding(10)
                     .background(Color(UIColor.secondarySystemFill))
-                    .cornerRadius(20)
+                    .cornerRadius(radius)
                     .padding(.horizontal, 8)
                     .padding(.top, 8)
+
+                    // MARK: - LISTA
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            ForEach(filteredUmamusumes) { u in
+                                StyledRowView(
+                                    title: u.name,
+                                    id: u.id,
+                                    showsFavorite: true,
+                                    accessory: .detailsWithFavorite,
+                                    onAccessoryTap: {
+                                        print("Detalles de \(u.name)")
+                                    },
+                                    onFavoriteTap: {
+                                        print("Marcada \(u.name) como favorita")
+                                    }
+                                )
+                                Divider()
+                            }
+                        }
+                        .background(Color(UIColor.secondarySystemFill))
+                        .cornerRadius(radius)
+                        .padding(.horizontal, 8)
+                        .padding(.top, 8)
+                    }
                 }
             }
             .navigationTitle("Umamusume")
