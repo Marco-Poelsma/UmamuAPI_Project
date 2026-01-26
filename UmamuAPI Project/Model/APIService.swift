@@ -45,36 +45,23 @@ struct APIService {
     // MARK: - Umamusume
     static func fetchUmamusumes(
         urlString: String,
-        completion: @escaping (Result<[Umamusume], APIError>) -> Void
+        completion: @escaping (Result<[Umamusume], Error>) -> Void
     ) {
+        guard let url = URL(string: urlString) else { return }
 
-        guard let url = URL(string: urlString) else {
-            completion(.failure(.invalidURL))
-            return
-        }
-
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, _, error in
             if let error = error {
-                completion(.failure(.urlSessionError(error)))
+                completion(.failure(error))
                 return
             }
 
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                completion(.failure(.invalidResponse))
-                return
-            }
-
-            guard let data = data else {
-                completion(.failure(.invalidResponse))
-                return
-            }
+            guard let data = data else { return }
 
             do {
-                let wrapper = try JSONDecoder().decode(UmamusumeResponse.self, from: data)
-                completion(.success(wrapper.properties))
+                let response = try JSONDecoder().decode(UmamusumeResponse.self, from: data)
+                completion(.success(response.properties))
             } catch {
-                completion(.failure(.decodingFailed(error)))
+                completion(.failure(error))
             }
         }.resume()
     }

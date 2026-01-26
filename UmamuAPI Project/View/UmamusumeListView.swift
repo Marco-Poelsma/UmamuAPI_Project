@@ -17,17 +17,28 @@ struct UmamusumeListView: View {
                         .multilineTextAlignment(.center)
                         .padding()
                 } else {
-                    List(list, id: \.id) { u in
-                        VStack(alignment: .leading, spacing: 6) {
+                    List(list) { u in
+                        VStack(alignment: .leading, spacing: 8) {
+
                             Text(u.name)
                                 .font(.headline)
 
-                            Text("Sparks: \(u.sparks.map(String.init).joined(separator: ", "))")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                            // Sparks
+                            VStack(alignment: .leading, spacing: 4) {
+                                ForEach(u.sparks) { spark in
+                                    HStack {
+                                        Text("Spark \(spark.spark)")
+                                        Spacer()
+                                        Text("⭐️ \(spark.rarity)")
+                                    }
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                }
+                            }
 
                             Text("Insp 1: \(u.inspirationID1) • Insp 2: \(u.inspirationID2)")
                                 .font(.caption)
+                                .foregroundColor(.secondary)
                         }
                         .padding(.vertical, 6)
                     }

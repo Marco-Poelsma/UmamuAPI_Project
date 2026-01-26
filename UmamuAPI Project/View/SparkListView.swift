@@ -33,9 +33,6 @@ struct SparkListView: View {
                             Text(spark.description)
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
-
-                            Text("⭐️ Rarity: \(spark.rarity)")
-                                .font(.caption)
                         }
                         .padding(.vertical, 6)
                     }

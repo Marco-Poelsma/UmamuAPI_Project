@@ -3,7 +3,6 @@ import Foundation
 struct Spark: Codable {
     let id: Int
     let name: String
-    let rarity: Int
     let description: String
     let type: SparkType
 }
