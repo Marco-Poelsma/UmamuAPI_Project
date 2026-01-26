@@ -93,8 +93,6 @@
 			children = (
 				EFB5EFE92F1E7906008F0849 /* Umamusume.swift */,
 				EFB5EFEC2F1E791C008F0849 /* Spark.swift */,
-				EFB5EFF42F1E823E008F0849 /* APIService.swift */,
-				EFB5EFFE2F1E876D008F0849 /* APIError.swift */,
 				EFB5F0102F1E94F4008F0849 /* UmamusumeResponse.swift */,
 				EFB5F0172F1E95FA008F0849 /* SparkResponse.swift */,
 			);
@@ -113,6 +111,8 @@
 		EFB5EFE82F1E787C008F0849 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				EFB5EFF42F1E823E008F0849 /* APIService.swift */,
+				EFB5EFFE2F1E876D008F0849 /* APIError.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
