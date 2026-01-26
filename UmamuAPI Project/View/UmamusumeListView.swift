@@ -6,46 +6,35 @@ struct UmamusumeListView: View {
 
     var body: some View {
         NavigationView {
-            List(vm.umamusumes) { u in
-                VStack(alignment: .leading, spacing: 8) {
+            ZStack {
+                Color(UIColor.systemGroupedBackground)
+                    .ignoresSafeArea()
 
-                    // 🐴 Nombre Umamusume
-                    Text(u.name)
-                        .font(.headline)
-
-                    // ✨ Sparks con nombre + rareza
-                    VStack(alignment: .leading, spacing: 4) {
-                        ForEach(u.sparks) { sparkRef in
-                            if let spark = vm.sparkByID[sparkRef.spark] {
-                                HStack {
-                                    Text(spark.name)
-                                    Spacer()
-                                    Text("⭐️ \(sparkRef.rarity)")
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(vm.umamusumes) { u in
+                            StyledRowView(
+                                title: u.name,
+                                id: u.id,
+                                showsFavorite: true,
+                                accessory: .detailsWithFavorite,
+                                onAccessoryTap: {
+                                    print("Detalles de \(u.name)")
+                                },
+                                onFavoriteTap: {
+                                    print("Marcada \(u.name) como favorita")
                                 }
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                            }
+                            )
+                            Divider()
                         }
                     }
-
-                    // 💡 Inspiraciones con nombre
-                    HStack {
-                        Text("Inspiración:")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-
-                        Text(vm.umamusumeByID[u.inspirationID1]?.name ?? "—")
-                            .font(.caption)
-
-                        Text("•")
-
-                        Text(vm.umamusumeByID[u.inspirationID2]?.name ?? "—")
-                            .font(.caption)
-                    }
+                    .background(Color(UIColor.secondarySystemFill))
+                    .cornerRadius(20)
+                    .padding(.horizontal, 8)
+                    .padding(.top, 8)
                 }
-                .padding(.vertical, 6)
             }
-            .navigationTitle("🐴 Umamusume")
+            .navigationTitle("Umamusume")
         }
         .onAppear {
             vm.loadData()
