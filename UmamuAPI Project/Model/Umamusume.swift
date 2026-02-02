@@ -2,10 +2,11 @@ import Foundation
 
 struct Umamusume: Codable, Identifiable {
     let id: Int
-    let name: String
-    let sparks: [UmamusumeSpark]
-    let inspirationID1: Int
-    let inspirationID2: Int
+    var name: String
+    var sparks: [UmamusumeSpark]
+    var inspirationID1: Int
+    var inspirationID2: Int
+    var isFavourite: Bool = false
 
     private enum CodingKeys: String, CodingKey {
         case id

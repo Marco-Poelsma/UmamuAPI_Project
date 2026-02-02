@@ -56,15 +56,14 @@ struct UmamusumeListView: View {
                                 StyledRowView(
                                     title: u.name,
                                     id: u.id,
+                                    isFavorite: u.isFavourite,
                                     showsFavorite: true,
                                     accessory: .detailsWithFavorite,
-                                    onAccessoryTap: {
-                                        print("Detalles de \(u.name)")
-                                    },
                                     onFavoriteTap: {
-                                        print("Marcada \(u.name) como favorita")
+                                        vm.toggleFavourite(for: u.id)
                                     }
                                 )
+
                                 Divider()
                             }
                         }
