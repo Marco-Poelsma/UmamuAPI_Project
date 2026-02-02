@@ -35,7 +35,7 @@ struct StyledRowView: View {
                 }) {
                     Image(systemName: isFavorite ? "star.fill" : "star")
                         .font(.system(size: 16))
-                        .foregroundColor(isFavorite ? .yellow : .gray)
+                        .foregroundColor(isFavorite ? .blue : .gray)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
@@ -45,6 +45,8 @@ struct StyledRowView: View {
         .padding(.vertical, 10)
         .padding(.horizontal, 12)
         .contentShape(Rectangle())
+        .background(Color(UIColor.clear))
+
     }
 
     @ViewBuilder

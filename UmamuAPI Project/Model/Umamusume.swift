@@ -19,6 +19,7 @@ struct Umamusume: Codable, Identifiable {
     struct UmamusumeResponse: Codable {
         let properties: [Umamusume]
     }
+    
 
 
     

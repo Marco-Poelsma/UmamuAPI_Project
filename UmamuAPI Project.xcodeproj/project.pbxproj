@@ -11,6 +11,10 @@
 		EF15D3202F27BCFD000BDEC8 /* StyledRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF15D31F2F27BCFD000BDEC8 /* StyledRowView.swift */; };
 		EF15D3242F27BFEE000BDEC8 /* BackgroundGreyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF15D3232F27BFEE000BDEC8 /* BackgroundGreyView.swift */; };
 		EF15F8692F30E6A900E9498B /* FavouritesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF15F8682F30E6A900E9498B /* FavouritesStore.swift */; };
+		EF15F86E2F30EB8D00E9498B /* ScrollableListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF15F86D2F30EB8D00E9498B /* ScrollableListContainer.swift */; };
+		EF15F8752F30F58E00E9498B /* SwipeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF15F8742F30F58E00E9498B /* SwipeRow.swift */; };
+		EF15F8792F30FCE200E9498B /* RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF15F8782F30FCE200E9498B /* RoundedCorner.swift */; };
+		EF15F87D2F30FDE000E9498B /* Array+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF15F87C2F30FDE000E9498B /* Array+Identifiable.swift */; };
 		EF3026952F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3026942F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift */; };
 		EF3026972F1E75FA00C74085 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3026962F1E75FA00C74085 /* ContentView.swift */; };
 		EF3026992F1E75FB00C74085 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF3026982F1E75FB00C74085 /* Assets.xcassets */; };
@@ -30,6 +34,10 @@
 		EF15D31F2F27BCFD000BDEC8 /* StyledRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledRowView.swift; sourceTree = "<group>"; };
 		EF15D3232F27BFEE000BDEC8 /* BackgroundGreyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundGreyView.swift; sourceTree = "<group>"; };
 		EF15F8682F30E6A900E9498B /* FavouritesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesStore.swift; sourceTree = "<group>"; };
+		EF15F86D2F30EB8D00E9498B /* ScrollableListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableListContainer.swift; sourceTree = "<group>"; };
+		EF15F8742F30F58E00E9498B /* SwipeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeRow.swift; sourceTree = "<group>"; };
+		EF15F8782F30FCE200E9498B /* RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorner.swift; sourceTree = "<group>"; };
+		EF15F87C2F30FDE000E9498B /* Array+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Identifiable.swift"; sourceTree = "<group>"; };
 		EF3026912F1E75FA00C74085 /* UmamuAPI Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UmamuAPI Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF3026942F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamuAPI_ProjectApp.swift; sourceTree = "<group>"; };
 		EF3026962F1E75FA00C74085 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -114,6 +122,9 @@
 				EFB5F01A2F1E96EB008F0849 /* UmamusumeListView.swift */,
 				EF15D31F2F27BCFD000BDEC8 /* StyledRowView.swift */,
 				EF15D3232F27BFEE000BDEC8 /* BackgroundGreyView.swift */,
+				EF15F86D2F30EB8D00E9498B /* ScrollableListContainer.swift */,
+				EF15F8742F30F58E00E9498B /* SwipeRow.swift */,
+				EF15F8782F30FCE200E9498B /* RoundedCorner.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -125,6 +136,7 @@
 				EFB5EFFE2F1E876D008F0849 /* APIError.swift */,
 				EF15D31C2F27B77A000BDEC8 /* UmamusumeViewModel.swift */,
 				EF15F8682F30E6A900E9498B /* FavouritesStore.swift */,
+				EF15F87C2F30FDE000E9498B /* Array+Identifiable.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -203,10 +215,14 @@
 				EFB5F0082F1E8DB8008F0849 /* SparkListView.swift in Sources */,
 				EF3026952F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift in Sources */,
 				EFB5F01B2F1E96EB008F0849 /* UmamusumeListView.swift in Sources */,
+				EF15F87D2F30FDE000E9498B /* Array+Identifiable.swift in Sources */,
 				EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */,
 				EF15D3202F27BCFD000BDEC8 /* StyledRowView.swift in Sources */,
 				EF15F8692F30E6A900E9498B /* FavouritesStore.swift in Sources */,
+				EF15F8792F30FCE200E9498B /* RoundedCorner.swift in Sources */,
 				EFB5EFF52F1E823E008F0849 /* APIService.swift in Sources */,
+				EF15F8752F30F58E00E9498B /* SwipeRow.swift in Sources */,
+				EF15F86E2F30EB8D00E9498B /* ScrollableListContainer.swift in Sources */,
 				EF15D31D2F27B77A000BDEC8 /* UmamusumeViewModel.swift in Sources */,
 				EFB5EFED2F1E791C008F0849 /* Spark.swift in Sources */,
 				EFB5F0182F1E95FA008F0849 /* SparkResponse.swift in Sources */,

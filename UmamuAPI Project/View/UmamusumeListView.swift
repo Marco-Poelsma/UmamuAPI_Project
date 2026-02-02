@@ -19,15 +19,13 @@ struct UmamusumeListView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color(UIColor.systemGroupedBackground)
+                Color(UIColor.systemBackground)
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
-
-                    // Corner radius compartido
                     let radius: CGFloat = 20
 
-                    // MARK: - BARRA DE BÚSQUEDA
+                    // 🔍 Barra de búsqueda
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
@@ -47,11 +45,11 @@ struct UmamusumeListView: View {
                     .background(Color(UIColor.secondarySystemFill))
                     .cornerRadius(radius)
                     .padding(.horizontal, 8)
-                    .padding(.top, 8)
+                    .padding(.bottom, 8)
 
-                    // MARK: - LISTA
-                    ScrollView {
-                        LazyVStack(spacing: 0) {
+                    // 📋 Lista
+                    List {
+                        Section {
                             ForEach(filteredUmamusumes) { u in
                                 StyledRowView(
                                     title: u.name,
@@ -63,21 +61,48 @@ struct UmamusumeListView: View {
                                         vm.toggleFavourite(for: u.id)
                                     }
                                 )
-
-                                Divider()
+                                .background(Color(UIColor.secondarySystemBackground))
+                                .cornerRadius(
+                                    filteredUmamusumes.isFirst(u) ? 20 : 0,
+                                    corners: [.topLeft, .topRight]
+                                )
+                                .cornerRadius(
+                                    filteredUmamusumes.isLast(u) ? 20 : 0,
+                                    corners: [.bottomLeft, .bottomRight]
+                                )
                             }
+                            .onDelete(perform: deleteItems)
                         }
-                        .background(Color(UIColor.secondarySystemFill))
-                        .cornerRadius(radius)
-                        .padding(.horizontal, 8)
-                        .padding(.top, 8)
+                        .listRowInsets(EdgeInsets())
+                        .background(Color(UIColor.secondarySystemBackground))
                     }
+                    .listStyle(PlainListStyle())
+                    .padding(.horizontal, 10)
+                    .background(Color.clear)
                 }
             }
             .navigationTitle("Umamusume")
+            .navigationBarItems(
+                leading: Button("Edit") { print("Edit tapped") }
+                    .foregroundColor(.blue),
+
+                trailing: Button(action: { print("Add tapped") }) {
+                    Image(systemName: "plus")
+                }
+                .foregroundColor(.blue)
+            )
         }
         .onAppear {
             vm.loadData()
+
+            // 🔥 Hace transparente el fondo del List
+            UITableView.appearance().backgroundColor = .clear
+            UITableViewCell.appearance().backgroundColor = .clear
         }
+    }
+
+    private func deleteItems(at offsets: IndexSet) {
+        let idsToDelete = offsets.map { filteredUmamusumes[$0].id }
+        vm.delete(ids: idsToDelete)
     }
 }

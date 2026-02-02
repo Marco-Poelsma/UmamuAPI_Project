@@ -52,6 +52,20 @@ class UmamusumeViewModel: ObservableObject {
             }
         }
     }
+    
+    func delete(ids: [Int]) {
+        guard umamusumes.count - ids.count >= 3 else { return }
+
+        umamusumes.removeAll { ids.contains($0.id) }
+
+        var favourites = FavouritesStore.shared.load()
+        ids.forEach { favourites.remove($0) }
+        FavouritesStore.shared.save(favourites)
+
+    }
+
+
+
 
     
     private func sortUmamusumes(_ list: [Umamusume]) -> [Umamusume] {
