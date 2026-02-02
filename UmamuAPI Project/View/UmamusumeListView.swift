@@ -47,38 +47,53 @@ struct UmamusumeListView: View {
                     .padding(.horizontal, 8)
                     .padding(.bottom, 8)
 
-                    // 📋 Lista
-                    List {
-                        Section {
-                            ForEach(filteredUmamusumes) { u in
-                                StyledRowView(
-                                    title: u.name,
-                                    id: u.id,
-                                    isFavorite: u.isFavourite,
-                                    showsFavorite: true,
-                                    accessory: .detailsWithFavorite,
-                                    onFavoriteTap: {
-                                        vm.toggleFavourite(for: u.id)
+                    // 📋 Lista con padding 8
+                    VStack(spacing: 0) {
+                        List {
+                            Section {
+                                ForEach(filteredUmamusumes) { u in
+                                    VStack(spacing: 0) {
+                                        VStack(spacing: 0) {
+                                            StyledRowView(
+                                                title: u.name,
+                                                id: u.id,
+                                                isFavorite: u.isFavourite,
+                                                showsFavorite: true,
+                                                accessory: .detailsWithFavorite,
+                                                onFavoriteTap: {
+                                                    vm.toggleFavourite(for: u.id)
+                                                }
+                                            )
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 4)
+
+                                            if !filteredUmamusumes.isLast(u) {
+                                                Divider()
+                                                    .background(Color.gray.opacity(0.6))
+                                                    .padding(.leading, 12)
+                                                    .padding(.trailing, 12)
+                                            }
+                                        }
+                                        .background(Color(UIColor.secondarySystemFill))
+                                        .cornerRadius(
+                                            filteredUmamusumes.isFirst(u) ? 20 : 0,
+                                            corners: [.topLeft, .topRight]
+                                        )
+                                        .cornerRadius(
+                                            filteredUmamusumes.isLast(u) ? 20 : 0,
+                                            corners: [.bottomLeft, .bottomRight]
+                                        )
                                     }
-                                )
-                                .background(Color(UIColor.secondarySystemBackground))
-                                .cornerRadius(
-                                    filteredUmamusumes.isFirst(u) ? 20 : 0,
-                                    corners: [.topLeft, .topRight]
-                                )
-                                .cornerRadius(
-                                    filteredUmamusumes.isLast(u) ? 20 : 0,
-                                    corners: [.bottomLeft, .bottomRight]
-                                )
+                                }
+                                .onDelete(perform: deleteItems)
                             }
-                            .onDelete(perform: deleteItems)
+                            .listRowInsets(EdgeInsets())
                         }
-                        .listRowInsets(EdgeInsets())
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .listStyle(PlainListStyle())
+                        .background(Color.clear)
                     }
-                    .listStyle(PlainListStyle())
-                    .padding(.horizontal, 10)
-                    .background(Color.clear)
+                    .padding(.top, 8)
+                    .padding(.horizontal, 8)
                 }
             }
             .navigationTitle("Umamusume")
@@ -95,9 +110,10 @@ struct UmamusumeListView: View {
         .onAppear {
             vm.loadData()
 
-            // 🔥 Hace transparente el fondo del List
+            // 🔥 Hacer transparente toda la lista (incluida la sección)
             UITableView.appearance().backgroundColor = .clear
             UITableViewCell.appearance().backgroundColor = .clear
+            UITableViewHeaderFooterView.appearance().tintColor = .clear
         }
     }
 
