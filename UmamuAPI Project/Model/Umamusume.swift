@@ -15,19 +15,10 @@ struct Umamusume: Codable, Identifiable {
         case inspirationID1 = "inspiration_id_1"
         case inspirationID2 = "inspiration_id_2"
     }
-    
-    struct UmamusumeResponse: Codable {
-        let properties: [Umamusume]
-    }
-    
 
-
-    
     struct UmamusumeSpark: Codable, Identifiable {
         let spark: Int
-        let rarity: Int
-        
+        var rarity: Int
         var id: Int { spark }
     }
-
 }

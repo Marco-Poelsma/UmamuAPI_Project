@@ -24,7 +24,25 @@ struct UmamusumeFormSheet: View {
 
                     ForEach(vm.selectedSparks) { spark in
                         let sparkData = vm.sparkByID[spark.spark]
-                        Text("\(spark.spark) - \(sparkData?.name ?? "Unknown")")
+
+                        HStack {
+                            Text("\(spark.spark) - \(sparkData?.name ?? "Unknown")")
+                            
+                            Spacer()
+
+                            HStack(spacing: 8) {
+                                StarButton(isOn: spark.rarity >= 1) {
+                                    vm.updateSparkRarity(sparkID: spark.spark, rarity: 1)
+                                }
+                                StarButton(isOn: spark.rarity >= 2) {
+                                    vm.updateSparkRarity(sparkID: spark.spark, rarity: 2)
+                                }
+                                StarButton(isOn: spark.rarity >= 3) {
+                                    vm.updateSparkRarity(sparkID: spark.spark, rarity: 3)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 6)
                     }
 
                     if !vm.isReadOnly {

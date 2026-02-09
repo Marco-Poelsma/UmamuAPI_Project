@@ -73,4 +73,9 @@ class UmamusumeFormViewModel: ObservableObject {
         inspiration1 = selected.first
         inspiration2 = selected.dropFirst().first
     }
+
+    func updateSparkRarity(sparkID: Int, rarity: Int) {
+        guard let index = selectedSparks.firstIndex(where: { $0.spark == sparkID }) else { return }
+        selectedSparks[index].rarity = rarity
+    }
 }
