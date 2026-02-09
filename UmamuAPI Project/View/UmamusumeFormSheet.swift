@@ -21,8 +21,10 @@ struct UmamusumeFormSheet: View {
                 }
 
                 Section(header: Text("Sparks")) {
+
                     ForEach(vm.selectedSparks) { spark in
-                        Text("Spark \(spark.spark) - Rarity \(spark.rarity)")
+                        let sparkData = vm.sparkByID[spark.spark]
+                        Text("\(spark.spark) - \(sparkData?.name ?? "Unknown")")
                     }
 
                     if !vm.isReadOnly {
@@ -50,7 +52,7 @@ struct UmamusumeFormSheet: View {
                     }
 
                     if !vm.isReadOnly {
-                        Button("Add Inspirations") {
+                        Button("Select Inspirations") {
                             selectedInspirationIDs = Set(vm.inspirationsCompact.map { $0.id })
                             showInspirationPicker = true
                         }

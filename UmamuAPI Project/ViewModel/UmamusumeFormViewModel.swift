@@ -17,12 +17,17 @@ class UmamusumeFormViewModel: ObservableObject {
     @Published var isReadOnly: Bool = false
 
     @Published var umamusumeAll: [Umamusume] = []
+    @Published var sparkAll: [Spark] = []
 
     var inspirationsCompact: [Umamusume] {
         var list: [Umamusume] = []
         if let i1 = inspiration1 { list.append(i1) }
         if let i2 = inspiration2 { list.append(i2) }
         return list
+    }
+
+    var sparkByID: [Int: Spark] {
+        Dictionary(uniqueKeysWithValues: sparkAll.map { ($0.id, $0) })
     }
 
     var canSave: Bool {
@@ -36,6 +41,7 @@ class UmamusumeFormViewModel: ObservableObject {
 
     func loadData() {
         loadUmamusumes()
+        loadSparks()
     }
 
     private func loadUmamusumes() {
@@ -45,6 +51,18 @@ class UmamusumeFormViewModel: ObservableObject {
             if case let .success(data) = result {
                 DispatchQueue.main.async {
                     self.umamusumeAll = data
+                }
+            }
+        }
+    }
+
+    private func loadSparks() {
+        APIService.fetchSparks(
+            urlString: "https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/spark.data.json"
+        ) { result in
+            if case let .success(data) = result {
+                DispatchQueue.main.async {
+                    self.sparkAll = data
                 }
             }
         }
