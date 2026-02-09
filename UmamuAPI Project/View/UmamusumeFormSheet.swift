@@ -33,9 +33,15 @@ struct UmamusumeFormSheet: View {
                             Spacer()
 
                             HStack(spacing: 2) {
-                                ForEach(0..<spark.rarity, id: \.self) { _ in
-                                    Image(systemName: "star.fill")
+                                ForEach(1...3, id: \.self) { i in
+                                    Image(systemName: i <= spark.rarity ? "star.fill" : "star")
                                         .foregroundColor(.yellow)
+                                        .onTapGesture {
+                                            guard isEditing else { return }
+                                            if let idx = vm.selectedSparks.firstIndex(where: { $0.spark == spark.spark }) {
+                                                vm.selectedSparks[idx].rarity = i
+                                            }
+                                        }
                                 }
                             }
                         }
