@@ -4,6 +4,7 @@ struct UmamusumeListView: View {
 
     @StateObject private var vm = UmamusumeViewModel()
     @State private var searchText = ""
+    @State private var showCreateSheet = false
 
     var filteredUmamusumes: [Umamusume] {
         if searchText.isEmpty {
@@ -25,7 +26,6 @@ struct UmamusumeListView: View {
                 VStack(spacing: 0) {
                     let radius: CGFloat = 20
 
-                    // 🔍 Barra de búsqueda
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
@@ -47,7 +47,6 @@ struct UmamusumeListView: View {
                     .padding(.horizontal, 8)
                     .padding(.bottom, 8)
 
-                    // 📋 Lista con padding 8
                     VStack(spacing: 0) {
                         List {
                             Section {
@@ -65,7 +64,7 @@ struct UmamusumeListView: View {
                                                 }
                                             )
                                             .padding(.vertical, 4)
-                                            .padding(.horizontal, 4) // mirar si está el github de Marquitus
+                                            .padding(.horizontal, 4)
 
                                             if !filteredUmamusumes.isLast(u) {
                                                 Divider()
@@ -98,19 +97,25 @@ struct UmamusumeListView: View {
             }
             .navigationTitle("Umamusume")
             .navigationBarItems(
-                leading: Button("Edit") { print("Edit tapped") }
-                    .foregroundColor(.blue),
-
-                trailing: Button(action: { print("Add tapped") }) {
+                leading: Button("Edit") {
+                    print("Edit tapped")
+                },
+                trailing: Button(action: {
+                    showCreateSheet = true
+                }) {
                     Image(systemName: "plus")
                 }
                 .foregroundColor(.blue)
             )
         }
+        .sheet(isPresented: $showCreateSheet) {
+            UmamusumeFormSheet(
+                vm: UmamusumeFormViewModel(mode: .create)
+            )
+        }
         .onAppear {
             vm.loadData()
 
-            // 🔥 Hacer transparente toda la lista (incluida la sección)
             UITableView.appearance().backgroundColor = .clear
             UITableViewCell.appearance().backgroundColor = .clear
             UITableViewHeaderFooterView.appearance().tintColor = .clear

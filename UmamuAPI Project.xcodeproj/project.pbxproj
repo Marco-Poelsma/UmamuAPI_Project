@@ -19,6 +19,11 @@
 		EF3026972F1E75FA00C74085 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3026962F1E75FA00C74085 /* ContentView.swift */; };
 		EF3026992F1E75FB00C74085 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF3026982F1E75FB00C74085 /* Assets.xcassets */; };
 		EF30269C2F1E75FB00C74085 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF30269B2F1E75FB00C74085 /* Preview Assets.xcassets */; };
+		EF7C79E32F3A288B00CE5664 /* UmamusumeFormMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79E22F3A288B00CE5664 /* UmamusumeFormMode.swift */; };
+		EF7C79E62F3A28AA00CE5664 /* UmamusumeFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79E52F3A28AA00CE5664 /* UmamusumeFormViewModel.swift */; };
+		EF7C79E92F3A28D300CE5664 /* UmamusumeFormSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79E82F3A28D300CE5664 /* UmamusumeFormSheet.swift */; };
+		EF7C79EC2F3A28FB00CE5664 /* SparkPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79EB2F3A28FB00CE5664 /* SparkPickerSheet.swift */; };
+		EF7C79EF2F3A291900CE5664 /* UmamusumePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */; };
 		EFB5EFEA2F1E7906008F0849 /* Umamusume.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFE92F1E7906008F0849 /* Umamusume.swift */; };
 		EFB5EFED2F1E791C008F0849 /* Spark.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFEC2F1E791C008F0849 /* Spark.swift */; };
 		EFB5EFF52F1E823E008F0849 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFF42F1E823E008F0849 /* APIService.swift */; };
@@ -44,6 +49,11 @@
 		EF3026982F1E75FB00C74085 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF30269B2F1E75FB00C74085 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EF30269D2F1E75FB00C74085 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EF7C79E22F3A288B00CE5664 /* UmamusumeFormMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumeFormMode.swift; sourceTree = "<group>"; };
+		EF7C79E52F3A28AA00CE5664 /* UmamusumeFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumeFormViewModel.swift; sourceTree = "<group>"; };
+		EF7C79E82F3A28D300CE5664 /* UmamusumeFormSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumeFormSheet.swift; sourceTree = "<group>"; };
+		EF7C79EB2F3A28FB00CE5664 /* SparkPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkPickerSheet.swift; sourceTree = "<group>"; };
+		EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumePickerSheet.swift; sourceTree = "<group>"; };
 		EFB5EFE92F1E7906008F0849 /* Umamusume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Umamusume.swift; sourceTree = "<group>"; };
 		EFB5EFEC2F1E791C008F0849 /* Spark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spark.swift; sourceTree = "<group>"; };
 		EFB5EFF42F1E823E008F0849 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
@@ -111,6 +121,7 @@
 				EFB5EFEC2F1E791C008F0849 /* Spark.swift */,
 				EFB5F0102F1E94F4008F0849 /* UmamusumeResponse.swift */,
 				EFB5F0172F1E95FA008F0849 /* SparkResponse.swift */,
+				EF7C79E22F3A288B00CE5664 /* UmamusumeFormMode.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -125,6 +136,9 @@
 				EF15F86D2F30EB8D00E9498B /* ScrollableListContainer.swift */,
 				EF15F8742F30F58E00E9498B /* SwipeRow.swift */,
 				EF15F8782F30FCE200E9498B /* RoundedCorner.swift */,
+				EF7C79E82F3A28D300CE5664 /* UmamusumeFormSheet.swift */,
+				EF7C79EB2F3A28FB00CE5664 /* SparkPickerSheet.swift */,
+				EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -137,6 +151,7 @@
 				EF15D31C2F27B77A000BDEC8 /* UmamusumeViewModel.swift */,
 				EF15F8682F30E6A900E9498B /* FavouritesStore.swift */,
 				EF15F87C2F30FDE000E9498B /* Array+Identifiable.swift */,
+				EF7C79E52F3A28AA00CE5664 /* UmamusumeFormViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -213,8 +228,13 @@
 				EFB5EFEA2F1E7906008F0849 /* Umamusume.swift in Sources */,
 				EF3026972F1E75FA00C74085 /* ContentView.swift in Sources */,
 				EFB5F0082F1E8DB8008F0849 /* SparkListView.swift in Sources */,
+				EF7C79E92F3A28D300CE5664 /* UmamusumeFormSheet.swift in Sources */,
 				EF3026952F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift in Sources */,
+				EF7C79EF2F3A291900CE5664 /* UmamusumePickerSheet.swift in Sources */,
+				EF7C79E32F3A288B00CE5664 /* UmamusumeFormMode.swift in Sources */,
 				EFB5F01B2F1E96EB008F0849 /* UmamusumeListView.swift in Sources */,
+				EF7C79EC2F3A28FB00CE5664 /* SparkPickerSheet.swift in Sources */,
+				EF7C79E62F3A28AA00CE5664 /* UmamusumeFormViewModel.swift in Sources */,
 				EF15F87D2F30FDE000E9498B /* Array+Identifiable.swift in Sources */,
 				EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */,
 				EF15D3202F27BCFD000BDEC8 /* StyledRowView.swift in Sources */,
