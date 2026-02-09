@@ -65,7 +65,7 @@ struct UmamusumeListView: View {
                                                 }
                                             )
                                             .padding(.vertical, 4)
-                                            .padding(.horizontal, 4)
+                                            .padding(.horizontal, 4) // mirar si está el github de Marquitus
 
                                             if !filteredUmamusumes.isLast(u) {
                                                 Divider()
