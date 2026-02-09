@@ -37,22 +37,16 @@ struct UmamusumeFormSheet: View {
 
                 Section(header: Text("Inspirations")) {
 
-                    HStack {
-                        Text("Inspiration 1")
-                        Spacer()
-                        Text(vm.inspiration1?.name ?? "Select")
-                            .foregroundColor(vm.inspiration1 == nil ? .gray : .primary)
+                    if let i1 = vm.inspiration1 {
+                        Text("\(i1.id) - \(i1.name)")
                     }
 
-                    HStack {
-                        Text("Inspiration 2")
-                        Spacer()
-                        Text(vm.inspiration2?.name ?? "Select")
-                            .foregroundColor(vm.inspiration2 == nil ? .gray : .primary)
+                    if let i2 = vm.inspiration2 {
+                        Text("\(i2.id) - \(i2.name)")
                     }
 
                     if !vm.isReadOnly {
-                        Button("Select Inspirations") {
+                        Button("Add Inspirations") {
                             selectedInspirationIDs = Set(vm.inspirationsCompact.map { $0.id })
                             showInspirationPicker = true
                         }
