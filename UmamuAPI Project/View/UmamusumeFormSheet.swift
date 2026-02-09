@@ -13,38 +13,35 @@ struct UmamusumeFormSheet: View {
     @State private var selectedSparkIDs: Set<Int> = []
     @State private var selectedInspirationIDs: Set<Int> = []
 
+    @State private var isEditing: Bool = false
+
     var body: some View {
         NavigationView {
             List {
 
                 Section(header: Text("Name")) {
                     TextField("Enter name", text: $vm.name)
-                        .disabled(vm.isReadOnly)
+                        .disabled(!isEditing && vm.mode == .view)
                 }
 
+                // MARK: SPARKS
                 Section(header: Text("Sparks")) {
 
                     ForEach(vm.selectedSparks) { spark in
-                        let sparkData = vm.sparkByID[spark.spark]
                         HStack {
-                            Text("\(spark.spark) - \(sparkData?.name ?? "Unknown")")
+                            Text("\(spark.spark) - \(vm.sparkByID[spark.spark]?.name ?? "Unknown")")
                             Spacer()
-                            HStack(spacing: 8) {
-                                StarButton(isOn: spark.rarity >= 1) {
-                                    vm.updateSparkRarity(sparkID: spark.spark, rarity: 1)
-                                }
-                                StarButton(isOn: spark.rarity >= 2) {
-                                    vm.updateSparkRarity(sparkID: spark.spark, rarity: 2)
-                                }
-                                StarButton(isOn: spark.rarity >= 3) {
-                                    vm.updateSparkRarity(sparkID: spark.spark, rarity: 3)
+
+                            HStack(spacing: 2) {
+                                ForEach(0..<spark.rarity, id: \.self) { _ in
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(.yellow)
                                 }
                             }
                         }
-                        .padding(.vertical, 6)
                     }
 
-                    if !vm.isReadOnly {
+                    if isEditing {
                         Button("Add Spark") {
                             selectedSparkIDs = Set(vm.selectedSparks.map { $0.spark })
                             showSparkPicker = true
@@ -52,6 +49,7 @@ struct UmamusumeFormSheet: View {
                     }
                 }
 
+                // MARK: INSPIRATIONS
                 Section(header: Text("Inspirations")) {
 
                     if let i1 = vm.inspiration1 {
@@ -62,7 +60,7 @@ struct UmamusumeFormSheet: View {
                         Text("\(i2.id) - \(i2.name)")
                     }
 
-                    if !vm.isReadOnly {
+                    if isEditing {
                         Button("Add Inspirations") {
                             selectedInspirationIDs = Set(vm.inspirationsCompact.map { $0.id })
                             showInspirationPicker = true
@@ -72,20 +70,17 @@ struct UmamusumeFormSheet: View {
             }
             .navigationBarTitle(title)
             .navigationBarItems(
-                leading: Button("Cancel") {
+                leading: Button(isEditing ? "Cancel" : "Close") {
                     presentationMode.wrappedValue.dismiss()
                 },
-                trailing: Button("Save") {
-                    let newUmamusume = Umamusume(
-                        id: (vm.umamusumeAll.map { $0.id }.max() ?? 0) + 1,
-                        name: vm.name,
-                        sparks: vm.selectedSparks,
-                        inspirationID1: vm.inspiration1?.id ?? 0,
-                        inspirationID2: vm.inspiration2?.id ?? 0,
-                        isFavourite: false
-                    )
-                    onSave(newUmamusume)
-                    presentationMode.wrappedValue.dismiss()
+                trailing: Button(isEditing ? "Save" : "Edit") {
+                    if isEditing {
+                        let updated = vm.toUmamusume()
+                        onSave(updated)
+                        presentationMode.wrappedValue.dismiss()
+                    } else {
+                        isEditing = true
+                    }
                 }
                 .disabled(!vm.canSave)
             )
@@ -127,14 +122,15 @@ struct UmamusumeFormSheet: View {
         }
         .onAppear {
             vm.loadData()
+            isEditing = (vm.mode != .view)
         }
     }
 
     private var title: String {
         switch vm.mode {
         case .create: return "New Umamusume"
-        case .edit: return "Edit Umamusume"
-        case .view: return "Umamusume"
+        case .edit: return isEditing ? "Edit Umamusume" : "Umamusume"
+        case .view: return isEditing ? "Edit Umamusume" : "Umamusume"
         }
     }
 }

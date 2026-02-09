@@ -10,8 +10,8 @@ class UmamusumeFormViewModel: ObservableObject {
 
     @Published var name: String = ""
     @Published var selectedSparks: [Umamusume.UmamusumeSpark] = []
-    @Published var inspiration1: Umamusume?
-    @Published var inspiration2: Umamusume?
+    @Published var inspirationID1: Int?
+    @Published var inspirationID2: Int?
 
     @Published var mode: Mode = .create
     @Published var isReadOnly: Bool = false
@@ -26,17 +26,37 @@ class UmamusumeFormViewModel: ObservableObject {
         return list
     }
 
+    var inspiration1: Umamusume? {
+        umamusumeAll.first(where: { $0.id == inspirationID1 })
+    }
+
+    var inspiration2: Umamusume? {
+        umamusumeAll.first(where: { $0.id == inspirationID2 })
+    }
+
     var sparkByID: [Int: Spark] {
         Dictionary(uniqueKeysWithValues: sparkAll.map { ($0.id, $0) })
     }
 
     var canSave: Bool {
-        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        inspirationID1 != nil &&
+        inspirationID2 != nil
     }
 
-    init(mode: Mode = .create) {
+    var existingID: Int?
+
+    init(mode: Mode = .create, umamusume: Umamusume? = nil) {
         self.mode = mode
         self.isReadOnly = (mode == .view)
+
+        if let u = umamusume {
+            self.existingID = u.id
+            self.name = u.name
+            self.selectedSparks = u.sparks
+            self.inspirationID1 = u.inspirationID1
+            self.inspirationID2 = u.inspirationID2
+        }
     }
 
     func loadData() {
@@ -70,12 +90,19 @@ class UmamusumeFormViewModel: ObservableObject {
 
     func setInspirations(from ids: Set<Int>) {
         let selected = umamusumeAll.filter { ids.contains($0.id) }
-        inspiration1 = selected.first
-        inspiration2 = selected.dropFirst().first
+        inspirationID1 = selected.first?.id
+        inspirationID2 = selected.dropFirst().first?.id
     }
 
-    func updateSparkRarity(sparkID: Int, rarity: Int) {
-        guard let index = selectedSparks.firstIndex(where: { $0.spark == sparkID }) else { return }
-        selectedSparks[index].rarity = rarity
+    func toUmamusume() -> Umamusume {
+        let newId = existingID ?? ((umamusumeAll.map { $0.id }.max() ?? 0) + 1)
+        return Umamusume(
+            id: newId,
+            name: name,
+            sparks: selectedSparks,
+            inspirationID1: inspirationID1 ?? 0,
+            inspirationID2: inspirationID2 ?? 0,
+            isFavourite: false
+        )
     }
 }

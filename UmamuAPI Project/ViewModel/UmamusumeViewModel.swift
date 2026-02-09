@@ -21,15 +21,22 @@ class UmamusumeViewModel: ObservableObject {
         loadSparks()
     }
 
-    func add(_ u: Umamusume) {
-        umamusumes.append(u)
-    }
-
     func toggleFavourite(for id: Int) {
         guard let index = umamusumes.firstIndex(where: { $0.id == id }) else { return }
 
         umamusumes[index].isFavourite.toggle()
         FavouritesStore.shared.toggle(id: id)
+    }
+
+    func add(_ u: Umamusume) {
+        umamusumes.append(u)
+        umamusumes = sortUmamusumes(umamusumes)
+    }
+
+    func update(_ u: Umamusume) {
+        guard let idx = umamusumes.firstIndex(where: { $0.id == u.id }) else { return }
+        umamusumes[idx] = u
+        umamusumes = sortUmamusumes(umamusumes)
     }
 
     // MARK: - Private
@@ -56,7 +63,7 @@ class UmamusumeViewModel: ObservableObject {
             }
         }
     }
-    
+
     func delete(ids: [Int]) {
         guard umamusumes.count - ids.count >= 3 else { return }
 
@@ -65,6 +72,7 @@ class UmamusumeViewModel: ObservableObject {
         var favourites = FavouritesStore.shared.load()
         ids.forEach { favourites.remove($0) }
         FavouritesStore.shared.save(favourites)
+
     }
 
     private func sortUmamusumes(_ list: [Umamusume]) -> [Umamusume] {
