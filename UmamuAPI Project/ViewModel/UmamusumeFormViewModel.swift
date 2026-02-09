@@ -1,35 +1,52 @@
 import Foundation
-import Combine
 
-final class UmamusumeFormViewModel: ObservableObject {
+class UmamusumeFormViewModel: ObservableObject {
+
+    enum Mode {
+        case create
+        case edit
+        case view
+    }
 
     @Published var name: String = ""
     @Published var selectedSparks: [Umamusume.UmamusumeSpark] = []
     @Published var inspiration1: Umamusume?
     @Published var inspiration2: Umamusume?
 
-    let mode: UmamusumeFormMode
-    let original: Umamusume?
+    @Published var mode: Mode = .create
+    @Published var isReadOnly: Bool = false
 
-    init(mode: UmamusumeFormMode, umamusume: Umamusume? = nil) {
-        self.mode = mode
-        self.original = umamusume
+    var umamusumeAll: [Umamusume] = []
 
-        if let u = umamusume {
-            self.name = u.name
-            self.selectedSparks = u.sparks
-        }
-    }
-
-    var isReadOnly: Bool {
-        mode == .view
+    var inspirationsCompact: [Umamusume] {
+        var list: [Umamusume] = []
+        if let i1 = inspiration1 { list.append(i1) }
+        if let i2 = inspiration2 { list.append(i2) }
+        return list
     }
 
     var canSave: Bool {
-        !isReadOnly &&
-        !name.isEmpty &&
-        inspiration1 != nil &&
-        inspiration2 != nil &&
-        !selectedSparks.isEmpty
+        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    init(mode: Mode = .create) {
+        self.mode = mode
+        self.isReadOnly = (mode == .view)
+    }
+
+    func loadData() {
+        loadUmamusumes()
+    }
+
+    private func loadUmamusumes() {
+        APIService.fetchUmamusumes(
+            urlString: "https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/umamusume.data.json"
+        ) { result in
+            if case let .success(data) = result {
+                DispatchQueue.main.async {
+                    self.umamusumeAll = data
+                }
+            }
+        }
     }
 }

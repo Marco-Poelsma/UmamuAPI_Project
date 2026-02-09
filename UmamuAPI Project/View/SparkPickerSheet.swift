@@ -3,33 +3,54 @@ import SwiftUI
 struct SparkPickerSheet: View {
 
     @Environment(\.presentationMode) private var presentationMode
-    @State private var sparks: [Spark] = []
 
-    let onSelect: (Umamusume.UmamusumeSpark) -> Void
+    @State private var sparks: [Spark] = []
+    @Binding var selectedIDs: Set<Int>
+
+    let onSave: () -> Void
+    let onCancel: () -> Void
 
     var body: some View {
         NavigationView {
             List(sparks) { spark in
                 Button(action: {
-                    onSelect(
-                        Umamusume.UmamusumeSpark(
-                            spark: spark.id,
-                            rarity: 1
-                        )
-                    )
-                    presentationMode.wrappedValue.dismiss()
+                    toggleSelection(spark.id)
                 }) {
-                    VStack(alignment: .leading) {
+                    HStack {
                         Text(spark.name)
-                        Text(spark.description)
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                        Spacer()
+                        if selectedIDs.contains(spark.id) {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.white)
+                                .padding(6)
+                                .background(Color.blue)
+                                .clipShape(Circle())
+                        }
                     }
                 }
+                .listRowBackground(selectedIDs.contains(spark.id) ? Color.blue.opacity(0.2) : Color.clear)
             }
-            .navigationBarTitle("Select Spark")
+            .navigationBarTitle("Select Sparks")
+            .navigationBarItems(
+                leading: Button("Cancel") {
+                    onCancel()
+                    presentationMode.wrappedValue.dismiss()
+                },
+                trailing: Button("Save") {
+                    onSave()
+                    presentationMode.wrappedValue.dismiss()
+                }
+            )
         }
         .onAppear(perform: load)
+    }
+
+    private func toggleSelection(_ id: Int) {
+        if selectedIDs.contains(id) {
+            selectedIDs.remove(id)
+        } else {
+            selectedIDs.insert(id)
+        }
     }
 
     private func load() {

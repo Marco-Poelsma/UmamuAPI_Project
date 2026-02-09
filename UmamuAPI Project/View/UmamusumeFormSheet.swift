@@ -2,8 +2,7 @@ import SwiftUI
 
 enum ActiveSheet {
     case spark
-    case inspiration1
-    case inspiration2
+    case inspiration
 }
 
 struct UmamusumeFormSheet: View {
@@ -12,6 +11,9 @@ struct UmamusumeFormSheet: View {
     @ObservedObject var vm: UmamusumeFormViewModel
 
     @State private var activeSheet: ActiveSheet? = nil
+
+    @State private var selectedSparks: Set<Int> = []
+    @State private var selectedInspirations: Set<Int> = []
 
     var body: some View {
         NavigationView {
@@ -29,7 +31,8 @@ struct UmamusumeFormSheet: View {
 
                     if !vm.isReadOnly {
                         Button(action: {
-                            activeSheet = ActiveSheet.spark
+                            selectedSparks = Set(vm.selectedSparks.map { $0.spark })
+                            activeSheet = .spark
                         }) {
                             Text("Add Spark")
                         }
@@ -42,7 +45,8 @@ struct UmamusumeFormSheet: View {
                         title: "Inspiration 1",
                         value: vm.inspiration1?.name,
                         action: {
-                            activeSheet = ActiveSheet.inspiration1
+                            activeSheet = .inspiration
+                            selectedInspirations = Set(vm.inspirationsCompact.map { $0.id })
                         }
                     )
 
@@ -50,7 +54,8 @@ struct UmamusumeFormSheet: View {
                         title: "Inspiration 2",
                         value: vm.inspiration2?.name,
                         action: {
-                            activeSheet = ActiveSheet.inspiration2
+                            activeSheet = .inspiration
+                            selectedInspirations = Set(vm.inspirationsCompact.map { $0.id })
                         }
                     )
                 }
@@ -69,39 +74,30 @@ struct UmamusumeFormSheet: View {
                 set: { if !$0 { self.activeSheet = nil } }
             )
         ) {
-            self.sheetContent()
+            if activeSheet == .spark {
+                SparkPickerSheet(
+                    selectedIDs: $selectedSparks,
+                    onSave: {
+                        applySparks()
+                        activeSheet = nil
+                    },
+                    onCancel: {
+                        activeSheet = nil
+                    }
+                )
+            } else if activeSheet == .inspiration {
+                UmamusumePickerSheet(
+                    selectedIDs: $selectedInspirations,
+                    onSave: {
+                        applyInspirations()
+                        activeSheet = nil
+                    },
+                    onCancel: {
+                        activeSheet = nil
+                    }
+                )
+            }
         }
-    }
-
-    private func sheetContent() -> AnyView {
-        if activeSheet == .spark {
-            return AnyView(
-                SparkPickerSheet { spark in
-                    vm.selectedSparks.append(spark)
-                    activeSheet = nil
-                }
-            )
-        }
-
-        if activeSheet == .inspiration1 {
-            return AnyView(
-                UmamusumePickerSheet { u in
-                    vm.inspiration1 = u
-                    activeSheet = nil
-                }
-            )
-        }
-
-        if activeSheet == .inspiration2 {
-            return AnyView(
-                UmamusumePickerSheet { u in
-                    vm.inspiration2 = u
-                    activeSheet = nil
-                }
-            )
-        }
-
-        return AnyView(EmptyView())
     }
 
     private var title: String {
@@ -116,15 +112,11 @@ struct UmamusumeFormSheet: View {
         Group {
             if vm.mode != .view {
                 Button("Save") {
-                    save()
+                    presentationMode.wrappedValue.dismiss()
                 }
                 .disabled(!vm.canSave)
             }
         }
-    }
-
-    private func save() {
-        presentationMode.wrappedValue.dismiss()
     }
 
     private func inspirationRow(
@@ -144,5 +136,16 @@ struct UmamusumeFormSheet: View {
                 action()
             }
         }
+    }
+
+    private func applySparks() {
+        let sparksToAdd = selectedSparks.map { Umamusume.UmamusumeSpark(spark: $0, rarity: 1) }
+        vm.selectedSparks = sparksToAdd
+    }
+
+    private func applyInspirations() {
+        let inspirations = vm.umamusumeAll.filter { selectedInspirations.contains($0.id) }
+        vm.inspiration1 = inspirations.first
+        vm.inspiration2 = inspirations.dropFirst().first
     }
 }
