@@ -110,7 +110,10 @@ struct UmamusumeListView: View {
         }
         .sheet(isPresented: $showCreateSheet) {
             UmamusumeFormSheet(
-                vm: UmamusumeFormViewModel(mode: .create)
+                vm: UmamusumeFormViewModel(mode: .create),
+                onSave: { newUmamusume in
+                    vm.add(newUmamusume)
+                }
             )
         }
         .onAppear {

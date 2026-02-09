@@ -5,6 +5,8 @@ struct UmamusumeFormSheet: View {
     @Environment(\.presentationMode) private var presentationMode
     @ObservedObject var vm: UmamusumeFormViewModel
 
+    let onSave: (Umamusume) -> Void
+
     @State private var showSparkPicker = false
     @State private var showInspirationPicker = false
 
@@ -24,12 +26,9 @@ struct UmamusumeFormSheet: View {
 
                     ForEach(vm.selectedSparks) { spark in
                         let sparkData = vm.sparkByID[spark.spark]
-
                         HStack {
                             Text("\(spark.spark) - \(sparkData?.name ?? "Unknown")")
-                            
                             Spacer()
-
                             HStack(spacing: 8) {
                                 StarButton(isOn: spark.rarity >= 1) {
                                     vm.updateSparkRarity(sparkID: spark.spark, rarity: 1)
@@ -77,6 +76,15 @@ struct UmamusumeFormSheet: View {
                     presentationMode.wrappedValue.dismiss()
                 },
                 trailing: Button("Save") {
+                    let newUmamusume = Umamusume(
+                        id: (vm.umamusumeAll.map { $0.id }.max() ?? 0) + 1,
+                        name: vm.name,
+                        sparks: vm.selectedSparks,
+                        inspirationID1: vm.inspiration1?.id ?? 0,
+                        inspirationID2: vm.inspiration2?.id ?? 0,
+                        isFavourite: false
+                    )
+                    onSave(newUmamusume)
                     presentationMode.wrappedValue.dismiss()
                 }
                 .disabled(!vm.canSave)
