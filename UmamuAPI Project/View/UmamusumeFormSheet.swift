@@ -1,19 +1,15 @@
 import SwiftUI
 
-enum ActiveSheet {
-    case spark
-    case inspiration
-}
-
 struct UmamusumeFormSheet: View {
 
     @Environment(\.presentationMode) private var presentationMode
     @ObservedObject var vm: UmamusumeFormViewModel
 
-    @State private var activeSheet: ActiveSheet? = nil
+    @State private var showSparkPicker = false
+    @State private var showInspirationPicker = false
 
-    @State private var selectedSparks: Set<Int> = []
-    @State private var selectedInspirations: Set<Int> = []
+    @State private var selectedSparkIDs: Set<Int> = []
+    @State private var selectedInspirationIDs: Set<Int> = []
 
     var body: some View {
         NavigationView {
@@ -30,73 +26,85 @@ struct UmamusumeFormSheet: View {
                     }
 
                     if !vm.isReadOnly {
-                        Button(action: {
-                            selectedSparks = Set(vm.selectedSparks.map { $0.spark })
-                            activeSheet = .spark
-                        }) {
-                            Text("Add Spark")
+                        Button("Add Spark") {
+                            selectedSparkIDs = Set(vm.selectedSparks.map { $0.spark })
+                            showSparkPicker = true
                         }
                     }
                 }
 
                 Section(header: Text("Inspirations")) {
 
-                    inspirationRow(
-                        title: "Inspiration 1",
-                        value: vm.inspiration1?.name,
-                        action: {
-                            activeSheet = .inspiration
-                            selectedInspirations = Set(vm.inspirationsCompact.map { $0.id })
-                        }
-                    )
+                    HStack {
+                        Text("Inspiration 1")
+                        Spacer()
+                        Text(vm.inspiration1?.name ?? "Select")
+                            .foregroundColor(vm.inspiration1 == nil ? .gray : .primary)
+                    }
 
-                    inspirationRow(
-                        title: "Inspiration 2",
-                        value: vm.inspiration2?.name,
-                        action: {
-                            activeSheet = .inspiration
-                            selectedInspirations = Set(vm.inspirationsCompact.map { $0.id })
+                    HStack {
+                        Text("Inspiration 2")
+                        Spacer()
+                        Text(vm.inspiration2?.name ?? "Select")
+                            .foregroundColor(vm.inspiration2 == nil ? .gray : .primary)
+                    }
+
+                    if !vm.isReadOnly {
+                        Button("Add Inspirations") {
+                            selectedInspirationIDs = Set(vm.inspirationsCompact.map { $0.id })
+                            showInspirationPicker = true
                         }
-                    )
+                    }
                 }
             }
             .navigationBarTitle(title)
             .navigationBarItems(
-                leading: Button("Close") {
+                leading: Button("Cancel") {
                     presentationMode.wrappedValue.dismiss()
                 },
-                trailing: saveButton
+                trailing: Button("Save") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+                .disabled(!vm.canSave)
+            )
+            .background(
+                NavigationLink(
+                    destination: SparkPickerSheet(
+                        selectedIDs: $selectedSparkIDs,
+                        onSave: {
+                            vm.selectedSparks = selectedSparkIDs.map {
+                                Umamusume.UmamusumeSpark(spark: $0, rarity: 1)
+                            }
+                            showSparkPicker = false
+                        },
+                        onCancel: {
+                            showSparkPicker = false
+                        }
+                    ),
+                    isActive: $showSparkPicker
+                ) { EmptyView() }
+                .hidden()
+            )
+            .background(
+                NavigationLink(
+                    destination: UmamusumePickerSheet(
+                        items: vm.umamusumeAll,
+                        selectedIDs: $selectedInspirationIDs,
+                        onSave: {
+                            vm.setInspirations(from: selectedInspirationIDs)
+                            showInspirationPicker = false
+                        },
+                        onCancel: {
+                            showInspirationPicker = false
+                        }
+                    ),
+                    isActive: $showInspirationPicker
+                ) { EmptyView() }
+                .hidden()
             )
         }
-        .sheet(
-            isPresented: Binding(
-                get: { self.activeSheet != nil },
-                set: { if !$0 { self.activeSheet = nil } }
-            )
-        ) {
-            if activeSheet == .spark {
-                SparkPickerSheet(
-                    selectedIDs: $selectedSparks,
-                    onSave: {
-                        applySparks()
-                        activeSheet = nil
-                    },
-                    onCancel: {
-                        activeSheet = nil
-                    }
-                )
-            } else if activeSheet == .inspiration {
-                UmamusumePickerSheet(
-                    selectedIDs: $selectedInspirations,
-                    onSave: {
-                        applyInspirations()
-                        activeSheet = nil
-                    },
-                    onCancel: {
-                        activeSheet = nil
-                    }
-                )
-            }
+        .onAppear {
+            vm.loadData()
         }
     }
 
@@ -106,46 +114,5 @@ struct UmamusumeFormSheet: View {
         case .edit: return "Edit Umamusume"
         case .view: return "Umamusume"
         }
-    }
-
-    private var saveButton: some View {
-        Group {
-            if vm.mode != .view {
-                Button("Save") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-                .disabled(!vm.canSave)
-            }
-        }
-    }
-
-    private func inspirationRow(
-        title: String,
-        value: String?,
-        action: @escaping () -> Void
-    ) -> some View {
-        HStack {
-            Text(title)
-            Spacer()
-            Text(value ?? "Select")
-                .foregroundColor(.gray)
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if !vm.isReadOnly {
-                action()
-            }
-        }
-    }
-
-    private func applySparks() {
-        let sparksToAdd = selectedSparks.map { Umamusume.UmamusumeSpark(spark: $0, rarity: 1) }
-        vm.selectedSparks = sparksToAdd
-    }
-
-    private func applyInspirations() {
-        let inspirations = vm.umamusumeAll.filter { selectedInspirations.contains($0.id) }
-        vm.inspiration1 = inspirations.first
-        vm.inspiration2 = inspirations.dropFirst().first
     }
 }

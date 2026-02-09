@@ -16,7 +16,7 @@ class UmamusumeFormViewModel: ObservableObject {
     @Published var mode: Mode = .create
     @Published var isReadOnly: Bool = false
 
-    var umamusumeAll: [Umamusume] = []
+    @Published var umamusumeAll: [Umamusume] = []
 
     var inspirationsCompact: [Umamusume] {
         var list: [Umamusume] = []
@@ -48,5 +48,11 @@ class UmamusumeFormViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    func setInspirations(from ids: Set<Int>) {
+        let selected = umamusumeAll.filter { ids.contains($0.id) }
+        inspiration1 = selected.first
+        inspiration2 = selected.dropFirst().first
     }
 }

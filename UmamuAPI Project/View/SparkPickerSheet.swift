@@ -11,37 +11,35 @@ struct SparkPickerSheet: View {
     let onCancel: () -> Void
 
     var body: some View {
-        NavigationView {
-            List(sparks) { spark in
-                Button(action: {
-                    toggleSelection(spark.id)
-                }) {
-                    HStack {
-                        Text(spark.name)
-                        Spacer()
-                        if selectedIDs.contains(spark.id) {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.white)
-                                .padding(6)
-                                .background(Color.blue)
-                                .clipShape(Circle())
-                        }
+        List(sparks) { spark in
+            Button(action: {
+                toggleSelection(spark.id)
+            }) {
+                HStack {
+                    Text(spark.name)
+                    Spacer()
+                    if selectedIDs.contains(spark.id) {
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.white)
+                            .padding(6)
+                            .background(Color.blue)
+                            .clipShape(Circle())
                     }
                 }
-                .listRowBackground(selectedIDs.contains(spark.id) ? Color.blue.opacity(0.2) : Color.clear)
             }
-            .navigationBarTitle("Select Sparks")
-            .navigationBarItems(
-                leading: Button("Cancel") {
-                    onCancel()
-                    presentationMode.wrappedValue.dismiss()
-                },
-                trailing: Button("Save") {
-                    onSave()
-                    presentationMode.wrappedValue.dismiss()
-                }
-            )
+            .listRowBackground(selectedIDs.contains(spark.id) ? Color.blue.opacity(0.2) : Color.clear)
         }
+        .navigationBarTitle("Select Sparks")
+        .navigationBarItems(
+            leading: Button("Cancel") {
+                onCancel()
+                presentationMode.wrappedValue.dismiss()
+            },
+            trailing: Button("Save") {
+                onSave()
+                presentationMode.wrappedValue.dismiss()
+            }
+        )
         .onAppear(perform: load)
     }
 
