@@ -19,6 +19,9 @@ class UmamusumeFormViewModel: ObservableObject {
     @Published var umamusumeAll: [Umamusume] = []
     @Published var sparkAll: [Spark] = []
 
+    // 🔥 NUEVO: guardar estado original del favorito
+    private var originalIsFavourite: Bool = false
+
     var inspirationsCompact: [Umamusume] {
         var list: [Umamusume] = []
         if let i1 = inspiration1 { list.append(i1) }
@@ -56,6 +59,9 @@ class UmamusumeFormViewModel: ObservableObject {
             self.selectedSparks = u.sparks
             self.inspirationID1 = u.inspirationID1
             self.inspirationID2 = u.inspirationID2
+
+            // 🔥 IMPORTANTE: guardar el favorito original
+            self.originalIsFavourite = u.isFavourite
         }
     }
 
@@ -96,13 +102,14 @@ class UmamusumeFormViewModel: ObservableObject {
 
     func toUmamusume() -> Umamusume {
         let newId = existingID ?? ((umamusumeAll.map { $0.id }.max() ?? 0) + 1)
+
         return Umamusume(
             id: newId,
             name: name,
             sparks: selectedSparks,
             inspirationID1: inspirationID1 ?? 0,
             inspirationID2: inspirationID2 ?? 0,
-            isFavourite: false
+            isFavourite: originalIsFavourite // 👈 mantiene el estado original
         )
     }
 }
