@@ -7,9 +7,11 @@ struct Spark: Codable, Identifiable {
     let type: SparkType
 }
 
-enum SparkType: String, Codable {
+enum SparkType: String, Codable, CaseIterable {
     case stat = "stat"
     case aptitude = "aptitude"
     case skill = "skill"
     case uniqueSkill = "unique_skill"
 }
+
+
