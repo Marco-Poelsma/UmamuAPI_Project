@@ -20,7 +20,7 @@ struct ContentView: View {
                 .tag(0)
             
             // Segunda Tab: SparkListView
-            SparkListView()
+            SparkRankingsView()
                 .tabItem {
                     Label("Sparks", systemImage: selectedTab == 1 ? "sparkles" : "bolt.fill")
                 }
