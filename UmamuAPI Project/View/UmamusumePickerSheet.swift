@@ -179,7 +179,7 @@ struct UmamusumePickerSheet: View {
                     } else {
                         Image(systemName: "star")
                             .font(.system(size: 14))
-                            .foregroundColor(.blue)
+                            .foregroundColor(.clear)
                             .padding(.trailing, 8)
                     }
                     
