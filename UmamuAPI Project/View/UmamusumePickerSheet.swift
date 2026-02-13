@@ -153,7 +153,6 @@ struct UmamusumePickerSheet: View {
     // MARK: - Umamusume Row
     private func umamusumeRow(item: Umamusume, index: Int, category: [Umamusume]) -> some View {
         VStack(spacing: 0) {
-            // Botón que ocupa toda el área
             Button(action: {
                 toggleSelection(item.id)
             }) {
@@ -180,7 +179,6 @@ struct UmamusumePickerSheet: View {
             }
             .buttonStyle(PlainButtonStyle())
             
-            // Divider solo entre elementos
             if index < category.count - 1 {
                 Divider()
                     .background(Color.gray.opacity(0.3))
@@ -203,7 +201,6 @@ struct UmamusumePickerSheet: View {
         if selectedIDs.contains(id) {
             selectedIDs.remove(id)
         } else {
-            // Permitir seleccionar hasta 2
             if selectedIDs.count < 2 {
                 selectedIDs.insert(id)
             }

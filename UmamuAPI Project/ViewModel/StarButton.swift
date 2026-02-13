@@ -8,7 +8,7 @@ struct StarButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: isOn ? "star.fill" : "star")
-                .foregroundColor(isOn ? .yellow : .gray)
+                .foregroundColor(isOn ? .blue : .gray)
         }
         .buttonStyle(PlainButtonStyle())
     }
