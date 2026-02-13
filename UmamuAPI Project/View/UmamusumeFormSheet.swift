@@ -208,7 +208,7 @@ struct UmamusumeFormSheet: View {
                 HStack(spacing: 2) {
                     ForEach(1...3, id: \.self) { i in
                         Image(systemName: i <= spark.rarity ? "star.fill" : "star")
-                            .foregroundColor(.yellow)
+                            .foregroundColor(.blue)
                             .font(.system(size: 14))
                             .onTapGesture {
                                 guard isEditing else { return }
