@@ -6,6 +6,8 @@ struct SparkPickerSheet: View {
 
     @State private var sparks: [Spark] = []
     @State private var searchText = ""
+    @State private var showValidationAlert = false
+    @State private var validationMessage = ""
 
     @Binding var selectedIDs: Set<Int>
 
@@ -38,6 +40,41 @@ struct SparkPickerSheet: View {
     var uniqueSkillSparks: [Spark] {
         filteredSparks.filter { $0.type == .uniqueSkill }
     }
+    
+    // MARK: - Validation
+    private var selectedStats: [Spark] {
+        sparks.filter { selectedIDs.contains($0.id) && $0.type == .stat }
+    }
+    
+    private var selectedAptitudes: [Spark] {
+        sparks.filter { selectedIDs.contains($0.id) && $0.type == .aptitude }
+    }
+    
+    private var selectedUniqueSkills: [Spark] {
+        sparks.filter { selectedIDs.contains($0.id) && $0.type == .uniqueSkill }
+    }
+    
+    private var isValid: Bool {
+        // DEBE haber 1 spark de Stat
+        guard selectedStats.count == 1 else {
+            validationMessage = "Debes seleccionar exactamente 1 spark de Stat"
+            return false
+        }
+        
+        // DEBE haber 1 spark de Aptitude
+        guard selectedAptitudes.count == 1 else {
+            validationMessage = "Debes seleccionar exactamente 1 spark de Aptitude"
+            return false
+        }
+        
+        // DEBE haber entre 0 y 3 sparks de unique skill
+        guard selectedUniqueSkills.count >= 0 && selectedUniqueSkills.count <= 3 else {
+            validationMessage = "Debes seleccionar entre 0 y 3 sparks de Unique Skill"
+            return false
+        }
+        
+        return true
+    }
 
     var body: some View {
         ZStack {
@@ -56,10 +93,21 @@ struct SparkPickerSheet: View {
                 presentationMode.wrappedValue.dismiss()
             },
             trailing: Button("Save") {
-                onSave()
-                presentationMode.wrappedValue.dismiss()
+                if isValid {
+                    onSave()
+                    presentationMode.wrappedValue.dismiss()
+                } else {
+                    showValidationAlert = true
+                }
             }
         )
+        .alert(isPresented: $showValidationAlert) {
+            Alert(
+                title: Text("Selección inválida"),
+                message: Text(validationMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
         .onAppear {
             load()
             
@@ -135,7 +183,7 @@ struct SparkPickerSheet: View {
     private var statSection: some View {
         Section(header:
             HStack {
-                Text("📊 STAT")
+                Text("STAT")
                     .font(.title3)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
@@ -145,6 +193,12 @@ struct SparkPickerSheet: View {
                 Text("\(statSparks.count) sparks")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                
+                // Indicador de selección
+                Text("(\(selectedStats.count)/1)")
+                    .font(.caption)
+                    .foregroundColor(selectedStats.count == 1 ? .green : .red)
+                    .padding(.leading, 4)
             }
             .padding(.horizontal, 4)
             .padding(.top, 8)
@@ -162,7 +216,7 @@ struct SparkPickerSheet: View {
     private var aptitudeSection: some View {
         Section(header:
             HStack {
-                Text("🏇 APTITUDE")
+                Text("APTITUDE")
                     .font(.title3)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
@@ -172,6 +226,12 @@ struct SparkPickerSheet: View {
                 Text("\(aptitudeSparks.count) sparks")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                
+                // Indicador de selección
+                Text("(\(selectedAptitudes.count)/1)")
+                    .font(.caption)
+                    .foregroundColor(selectedAptitudes.count == 1 ? .green : .red)
+                    .padding(.leading, 4)
             }
             .padding(.horizontal, 4)
             .padding(.top, 8)
@@ -189,7 +249,7 @@ struct SparkPickerSheet: View {
     private var skillSection: some View {
         Section(header:
             HStack {
-                Text("⚔️ SKILL")
+                Text("SKILL")
                     .font(.title3)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
@@ -216,7 +276,7 @@ struct SparkPickerSheet: View {
     private var uniqueSkillSection: some View {
         Section(header:
             HStack {
-                Text("🌟 UNIQUE SKILL")
+                Text("UNIQUE")
                     .font(.title3)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
@@ -226,6 +286,12 @@ struct SparkPickerSheet: View {
                 Text("\(uniqueSkillSparks.count) sparks")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                
+                // Indicador de selección
+                Text("(\(selectedUniqueSkills.count)/3)")
+                    .font(.caption)
+                    .foregroundColor(selectedUniqueSkills.count <= 3 ? .green : .red)
+                    .padding(.leading, 4)
             }
             .padding(.horizontal, 4)
             .padding(.top, 8)
@@ -243,47 +309,49 @@ struct SparkPickerSheet: View {
     // MARK: - Spark Row
     private func sparkRow(spark: Spark, index: Int, category: [Spark]) -> some View {
         VStack(spacing: 0) {
-            VStack(spacing: 0) {
-                Button(action: {
-                    toggleSelection(spark.id)
-                }) {
-                    HStack {
-                        Text(spark.name)
-                            .font(.body)
-                            .foregroundColor(.primary)
-                        
-                        Spacer()
-                        
-                        if selectedIDs.contains(spark.id) {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.white)
-                                .padding(6)
-                                .background(Color.blue)
-                                .clipShape(Circle())
-                                .font(.system(size: 12, weight: .bold))
-                        }
+            // Botón que ocupa toda el área
+            Button(action: {
+                toggleSelection(spark.id)
+            }) {
+                HStack {
+                    Text(spark.name)
+                        .font(.body)
+                        .foregroundColor(.primary)
+                    
+                    Spacer()
+                    
+                    if selectedIDs.contains(spark.id) {
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.white)
+                            .padding(4) // 🔥 Reducido de 6 a 4
+                            .background(Color.blue)
+                            .clipShape(Circle())
+                            .font(.system(size: 10, weight: .bold)) // 🔥 Reducido de 12 a 10
                     }
-                    .padding(.vertical, 14)
-                    .padding(.horizontal, 16)
                 }
-                .buttonStyle(PlainButtonStyle())
-                
-                if index < category.count - 1 {
-                    Divider()
-                        .background(Color.gray.opacity(0.3))
-                        .padding(.leading, 16)
-                }
+                .padding(.vertical, 14)
+                .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
             }
-            .background(Color(UIColor.secondarySystemFill))
-            .cornerRadius(
-                index == 0 ? 12 : 0,
-                corners: [.topLeft, .topRight]
-            )
-            .cornerRadius(
-                index == category.count - 1 ? 12 : 0,
-                corners: [.bottomLeft, .bottomRight]
-            )
+            .buttonStyle(PlainButtonStyle())
+            
+            // Divider solo entre elementos
+            if index < category.count - 1 {
+                Divider()
+                    .background(Color.gray.opacity(0.3))
+                    .padding(.leading, 16)
+            }
         }
+        .background(Color(UIColor.secondarySystemFill))
+        .cornerRadius(
+            index == 0 ? 12 : 0,
+            corners: [.topLeft, .topRight]
+        )
+        .cornerRadius(
+            index == category.count - 1 ? 12 : 0,
+            corners: [.bottomLeft, .bottomRight]
+        )
     }
 
     // MARK: - Selection
