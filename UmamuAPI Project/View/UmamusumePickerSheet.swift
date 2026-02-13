@@ -157,12 +157,33 @@ struct UmamusumePickerSheet: View {
                 toggleSelection(item.id)
             }) {
                 HStack {
+                    // ID
+                    Text("\(item.id)")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                        .frame(width: 40, alignment: .leading)
+                    
+                    // Nombre
                     Text(item.name)
                         .font(.body)
                         .foregroundColor(.primary)
                     
                     Spacer()
                     
+                    // Estrella de favorito (solo visual, NO es botón)
+                    if item.isFavourite {
+                        Image(systemName: "star.fill")
+                            .font(.system(size: 14))
+                            .foregroundColor(.blue)
+                            .padding(.trailing, 8)
+                    } else {
+                        Image(systemName: "star")
+                            .font(.system(size: 14))
+                            .foregroundColor(.blue)
+                            .padding(.trailing, 8)
+                    }
+                    
+                    // Checkmark de selección
                     if selectedIDs.contains(item.id) {
                         Image(systemName: "checkmark")
                             .foregroundColor(.white)

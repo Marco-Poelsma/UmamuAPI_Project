@@ -14,6 +14,7 @@ struct Umamusume: Codable, Identifiable {
         case sparks
         case inspirationID1 = "inspiration_id_1"
         case inspirationID2 = "inspiration_id_2"
+        //case isFavourite = "is_favourite"
     }
 
     struct UmamusumeSpark: Codable, Identifiable {
