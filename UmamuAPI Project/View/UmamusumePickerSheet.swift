@@ -11,6 +11,8 @@ struct UmamusumePickerSheet: View {
     let onCancel: () -> Void
     
     @State private var searchText = ""
+    @State private var showValidationAlert = false
+    @State private var validationMessage = ""
 
     // MARK: - Filtering
     var filteredItems: [Umamusume] {
@@ -22,6 +24,15 @@ struct UmamusumePickerSheet: View {
                 String($0.id).contains(searchText)
             }
         }
+    }
+    
+    // MARK: - Validation
+    private var isValid: Bool {
+        guard selectedIDs.count == 2 else {
+            validationMessage = "Debes seleccionar exactamente 2 umamusume"
+            return false
+        }
+        return true
     }
 
     var body: some View {
@@ -41,10 +52,21 @@ struct UmamusumePickerSheet: View {
                 presentationMode.wrappedValue.dismiss()
             },
             trailing: Button("Save") {
-                onSave()
-                presentationMode.wrappedValue.dismiss()
+                if isValid {
+                    onSave()
+                    presentationMode.wrappedValue.dismiss()
+                } else {
+                    showValidationAlert = true
+                }
             }
         )
+        .alert(isPresented: $showValidationAlert) {
+            Alert(
+                title: Text("Selección inválida"),
+                message: Text(validationMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
         .onAppear {
             UITableView.appearance().backgroundColor = .clear
             UITableViewCell.appearance().backgroundColor = .clear
@@ -83,12 +105,12 @@ struct UmamusumePickerSheet: View {
     private var contentList: some View {
         VStack(spacing: 0) {
             List {
-                // 🔥 HEADER COMO PARTE DEL CONTENIDO (no como header de sección)
+                // Header como parte del contenido
                 sectionHeader
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 
-                // 🔥 FILTRADOS
+                // Filas filtradas
                 ForEach(Array(filteredItems.enumerated()), id: \.element.id) { index, item in
                     umamusumeRow(item: item, index: index, category: filteredItems)
                         .listRowInsets(EdgeInsets())
@@ -116,10 +138,10 @@ struct UmamusumePickerSheet: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             
-            // Indicador de selección
+            // Indicador de selección con color
             Text("(\(selectedIDs.count)/2)")
                 .font(.caption)
-                .foregroundColor(selectedIDs.count <= 2 ? .green : .red)
+                .foregroundColor(selectedIDs.count == 2 ? .green : .red)
                 .padding(.leading, 4)
         }
         .padding(.horizontal, 4)
@@ -181,6 +203,7 @@ struct UmamusumePickerSheet: View {
         if selectedIDs.contains(id) {
             selectedIDs.remove(id)
         } else {
+            // Permitir seleccionar hasta 2
             if selectedIDs.count < 2 {
                 selectedIDs.insert(id)
             }
