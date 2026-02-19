@@ -19,15 +19,24 @@ struct TopRankingView: View {
         }
     }
     
+    // Spark activo para la categoría
+    private var activeSparkID: Int? {
+        category.sparksSortedByID.first?.id
+    }
+    
     var filteredUmamusumes: [Umamusume] {
+        let baseList: [Umamusume]
+        
         if searchText.isEmpty {
-            return vm.umamusumes
+            baseList = vm.umamusumes
         } else {
-            return vm.umamusumes.filter {
+            baseList = vm.umamusumes.filter {
                 $0.name.lowercased().contains(searchText.lowercased()) ||
                 String($0.id).contains(searchText)
             }
         }
+        
+        return vm.sortUmamusumes(baseList, bySpark: activeSparkID)
     }
     
     var body: some View {
@@ -61,7 +70,7 @@ struct TopRankingView: View {
                 .padding(.horizontal, 8)
                 .padding(.vertical, 8)
                 
-                // 📋 Lista de Umamusumes
+                // Lista de Umamusumes
                 ScrollableListContainer(radius: radius) {
                     ForEach(filteredUmamusumes) { u in
                         VStack(spacing: 0) {
@@ -104,7 +113,7 @@ struct TopRankingView: View {
                 }
             }
         }
-        .navigationTitle(category.name) // 🔥 TÍTULO DINÁMICO
+        .navigationTitle(category.name)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $activeSheet) { sheet in
             switch sheet {

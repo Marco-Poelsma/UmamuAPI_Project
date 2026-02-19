@@ -19,7 +19,6 @@ class UmamusumeFormViewModel: ObservableObject {
     @Published var umamusumeAll: [Umamusume] = []
     @Published var sparkAll: [Spark] = []
 
-    // 🔥 NUEVO: guardar estado original del favorito
     private var originalIsFavourite: Bool = false
 
     var inspirationsCompact: [Umamusume] {
@@ -60,7 +59,6 @@ class UmamusumeFormViewModel: ObservableObject {
             self.inspirationID1 = u.inspirationID1
             self.inspirationID2 = u.inspirationID2
 
-            // 🔥 IMPORTANTE: guardar el favorito original
             self.originalIsFavourite = u.isFavourite
         }
     }
