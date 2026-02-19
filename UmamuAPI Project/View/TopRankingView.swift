@@ -59,7 +59,7 @@ struct TopRankingView: View {
                 .background(Color(UIColor.secondarySystemFill))
                 .cornerRadius(radius)
                 .padding(.horizontal, 8)
-                .padding(.bottom, 8)
+                .padding(.vertical, 8)
                 
                 // 📋 Lista de Umamusumes
                 ScrollableListContainer(radius: radius) {
