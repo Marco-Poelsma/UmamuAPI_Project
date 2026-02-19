@@ -34,6 +34,7 @@
 		EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F0102F1E94F4008F0849 /* UmamusumeResponse.swift */; };
 		EFB5F0182F1E95FA008F0849 /* SparkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F0172F1E95FA008F0849 /* SparkResponse.swift */; };
 		EFB5F01B2F1E96EB008F0849 /* UmamusumeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5F01A2F1E96EB008F0849 /* UmamusumeListView.swift */; };
+		EFDC66952F478C61002D1C6E /* TopRankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDC66942F478C61002D1C6E /* TopRankingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,7 @@
 		EFB5F0102F1E94F4008F0849 /* UmamusumeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumeResponse.swift; sourceTree = "<group>"; };
 		EFB5F0172F1E95FA008F0849 /* SparkResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkResponse.swift; sourceTree = "<group>"; };
 		EFB5F01A2F1E96EB008F0849 /* UmamusumeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumeListView.swift; sourceTree = "<group>"; };
+		EFDC66942F478C61002D1C6E /* TopRankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopRankingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +146,7 @@
 				EF7C79EB2F3A28FB00CE5664 /* SparkPickerSheet.swift */,
 				EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */,
 				EF1AEC492F3F7FA2004AB9C0 /* SparkRankingsView.swift */,
+				EFDC66942F478C61002D1C6E /* TopRankingView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 				EF7C79EC2F3A28FB00CE5664 /* SparkPickerSheet.swift in Sources */,
 				EF7C79F72F3A3C2400CE5664 /* StarButton.swift in Sources */,
 				EF7C79E62F3A28AA00CE5664 /* UmamusumeFormViewModel.swift in Sources */,
+				EFDC66952F478C61002D1C6E /* TopRankingView.swift in Sources */,
 				EF15F87D2F30FDE000E9498B /* Array+Identifiable.swift in Sources */,
 				EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */,
 				EF15D3202F27BCFD000BDEC8 /* StyledRowView.swift in Sources */,

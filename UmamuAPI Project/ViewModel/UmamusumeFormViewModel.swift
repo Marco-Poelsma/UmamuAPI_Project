@@ -109,7 +109,7 @@ class UmamusumeFormViewModel: ObservableObject {
             sparks: selectedSparks,
             inspirationID1: inspirationID1 ?? 0,
             inspirationID2: inspirationID2 ?? 0,
-            isFavourite: originalIsFavourite // 👈 mantiene el estado original
+            isFavourite: originalIsFavourite
         )
     }
 }
