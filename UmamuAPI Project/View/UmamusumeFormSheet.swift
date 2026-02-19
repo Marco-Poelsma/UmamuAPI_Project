@@ -66,24 +66,26 @@ struct UmamusumeFormSheet: View {
                             .listRowBackground(Color.clear)
                         
                         // MARK: INSPIRATIONS CONTENT
+
                         if let i1 = vm.inspiration1 {
                             inspirationRow(umamusume: i1, index: 0, category: vm.inspirationsCompact)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Color.clear)
                         }
-                        
+
                         if let i2 = vm.inspiration2 {
                             inspirationRow(umamusume: i2, index: 1, category: vm.inspirationsCompact)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Color.clear)
                         }
-                        
-                        if isEditing && vm.inspirationsCompact.count < 2 {
+
+                        if isEditing {
                             addInspirationRow
                                 .padding(.top, vm.inspirationsCompact.isEmpty ? 0 : 8)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Color.clear)
                         }
+
                     }
                     .listStyle(PlainListStyle())
                     .background(Color.clear)
