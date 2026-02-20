@@ -33,7 +33,7 @@ struct UmamusumeListView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color(UIColor.systemBackground)
+                Color.appBackground
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
@@ -41,21 +41,22 @@ struct UmamusumeListView: View {
 
                     HStack {
                         Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.searchBarIcon)
 
                         TextField("Buscar por nombre o ID...", text: $searchText)
+                            .foregroundColor(.searchBarText)
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
 
                         if !searchText.isEmpty {
                             Button(action: { searchText = "" }) {
                                 Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.searchBarClearButton)
                             }
                         }
                     }
                     .padding(10)
-                    .background(Color(UIColor.secondarySystemFill))
+                    .background(Color.searchBarBackground)
                     .cornerRadius(radius)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 8)
@@ -87,12 +88,12 @@ struct UmamusumeListView: View {
 
                                             if !filteredUmamusumes.isLast(u) {
                                                 Divider()
-                                                    .background(Color.gray.opacity(0.6))
+                                                    .background(Color.lightGray)
                                                     .padding(.leading, 12)
                                                     .padding(.trailing, 12)
                                             }
                                         }
-                                        .background(Color(UIColor.secondarySystemFill))
+                                        .background(Color.primaryFill)
                                         .cornerRadius(
                                             filteredUmamusumes.isFirst(u) ? 20 : 0,
                                             corners: [.topLeft, .topRight]
@@ -118,13 +119,15 @@ struct UmamusumeListView: View {
             .navigationBarItems(
                 leading: Button("Edit") {
                     print("Edit tapped")
-                },
+                }
+                .foregroundColor(.appBlue),
+                
                 trailing: Button(action: {
                     activeSheet = .create
                 }) {
                     Image(systemName: "plus")
                 }
-                .foregroundColor(.blue)
+                .foregroundColor(.appBlue)
             )
         }
         .sheet(item: $activeSheet) { sheet in

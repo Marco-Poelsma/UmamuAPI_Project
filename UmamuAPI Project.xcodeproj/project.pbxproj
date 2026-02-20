@@ -26,6 +26,7 @@
 		EF7C79EC2F3A28FB00CE5664 /* SparkPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79EB2F3A28FB00CE5664 /* SparkPickerSheet.swift */; };
 		EF7C79EF2F3A291900CE5664 /* UmamusumePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */; };
 		EF7C79F72F3A3C2400CE5664 /* StarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79F62F3A3C2400CE5664 /* StarButton.swift */; };
+		EF9159602F48CDE0007DCB49 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF91595F2F48CDE0007DCB49 /* Color.swift */; };
 		EF92EE382F48B43F000B126D /* GitHubService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE372F48B43F000B126D /* GitHubService.swift */; };
 		EF92EE3B2F48B45B000B126D /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE3A2F48B45B000B126D /* SyncManager.swift */; };
 		EF92EE3F2F48B77D000B126D /* GitHubConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE3E2F48B77D000B126D /* GitHubConfig.swift */; };
@@ -64,6 +65,7 @@
 		EF7C79EB2F3A28FB00CE5664 /* SparkPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkPickerSheet.swift; sourceTree = "<group>"; };
 		EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumePickerSheet.swift; sourceTree = "<group>"; };
 		EF7C79F62F3A3C2400CE5664 /* StarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarButton.swift; sourceTree = "<group>"; };
+		EF91595F2F48CDE0007DCB49 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		EF92EE372F48B43F000B126D /* GitHubService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubService.swift; sourceTree = "<group>"; };
 		EF92EE3A2F48B45B000B126D /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
 		EF92EE3E2F48B77D000B126D /* GitHubConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubConfig.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				EFB5F0172F1E95FA008F0849 /* SparkResponse.swift */,
 				EF7C79E22F3A288B00CE5664 /* UmamusumeFormMode.swift */,
 				EF92EE372F48B43F000B126D /* GitHubService.swift */,
+				EF91595F2F48CDE0007DCB49 /* Color.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -254,6 +257,7 @@
 				EFB5F0082F1E8DB8008F0849 /* SparkListView.swift in Sources */,
 				EF7C79E92F3A28D300CE5664 /* UmamusumeFormSheet.swift in Sources */,
 				EF3026952F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift in Sources */,
+				EF9159602F48CDE0007DCB49 /* Color.swift in Sources */,
 				EF7C79EF2F3A291900CE5664 /* UmamusumePickerSheet.swift in Sources */,
 				EF92EE3B2F48B45B000B126D /* SyncManager.swift in Sources */,
 				EF92EE382F48B43F000B126D /* GitHubService.swift in Sources */,
