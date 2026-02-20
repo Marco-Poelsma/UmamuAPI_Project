@@ -6,14 +6,71 @@ class UmamusumeViewModel: ObservableObject {
     @Published var umamusumes: [Umamusume] = []
     @Published var sparks: [Spark] = []
     @Published var isSyncing = false
+    @Published var lastUpdated: Date?
+    @Published var isAutoRefreshEnabled = true
     
     private let syncManager = SyncManager.shared
     private var cancellables = Set<AnyCancellable>()
     private var isSavingInProgress = false
+    private var autoRefreshTimer: Timer?
+    private var refreshCancellable: AnyCancellable?
     
     init() {
         syncManager.$isSyncing
             .assign(to: &$isSyncing)
+        
+        startAutoRefresh()
+    }
+    
+    deinit {
+        stopAutoRefresh()
+    }
+    
+    // MARK: - Auto Refresh
+    
+    func startAutoRefresh() {
+        stopAutoRefresh() // Detener cualquier timer existente
+        
+        print("⏰ Iniciando auto-refresh cada 5 segundos")
+        
+        // Usar Timer para actualizar cada 5 segundos
+        autoRefreshTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            guard let self = self, self.isAutoRefreshEnabled else { return }
+            
+            print("🔄 Auto-refresh: cargando datos de la API...")
+            self.loadUmamusumesFromAPI()
+        }
+        
+        // También podemos usar Combine para más control
+        setupCombineRefresh()
+    }
+    
+    func stopAutoRefresh() {
+        autoRefreshTimer?.invalidate()
+        autoRefreshTimer = nil
+        refreshCancellable?.cancel()
+        refreshCancellable = nil
+        print("⏹️ Auto-refresh detenido")
+    }
+    
+    func toggleAutoRefresh() {
+        isAutoRefreshEnabled.toggle()
+        if isAutoRefreshEnabled {
+            startAutoRefresh()
+        } else {
+            stopAutoRefresh()
+        }
+    }
+    
+    private func setupCombineRefresh() {
+        // Alternativa usando Combine para más control
+        refreshCancellable = Timer.publish(every: 5.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self = self, self.isAutoRefreshEnabled else { return }
+                print("🔄 Combine refresh: cargando datos...")
+                self.loadUmamusumesFromAPI()
+            }
     }
     
     // MARK: - Data Loading
@@ -23,7 +80,11 @@ class UmamusumeViewModel: ObservableObject {
         loadSparks()
     }
     
-    private func loadUmamusumes() {
+    func loadUmamusumes() {
+        loadUmamusumesFromAPI()
+    }
+    
+    private func loadUmamusumesFromAPI() {
         APIService.fetchUmamusumes(
             urlString: "https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/umamusume.data.json"
         ) { [weak self] result in
@@ -39,10 +100,12 @@ class UmamusumeViewModel: ObservableObject {
                 
                 DispatchQueue.main.async {
                     self?.umamusumes = sorted
+                    self?.lastUpdated = Date()
+                    print("✅ Datos actualizados desde API: \(sorted.count) umamusumes")
                 }
                 
             case .failure(let error):
-                print("❌ Error loading umamusumes: \(error)")
+                print("❌ Error loading umamusumes from API: \(error)")
             }
         }
     }
@@ -127,9 +190,7 @@ class UmamusumeViewModel: ObservableObject {
         
         isSavingInProgress = true
         
-        // Esto ya está diseñado para ir a background automáticamente
         syncManager.syncUmamusumes(umamusumes) { [weak self] result in
-            // Este completion puede venir de background, pero SyncManager ya lo lleva a main
             DispatchQueue.main.async {
                 self?.isSavingInProgress = false
                 switch result {
