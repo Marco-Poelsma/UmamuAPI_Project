@@ -15,14 +15,14 @@ struct ContentView: View {
             // Primera Tab: UmamusumeListView
             UmamusumeListView()
                 .tabItem {
-                    Label("Umamusume", systemImage: selectedTab == 0 ? "list.star.fill" : "list.bullet")
+                    Label("Umamusume", systemImage: selectedTab == 0 ? "heart.fill" : "heart.fill")
                 }
                 .tag(0)
             
             // Segunda Tab: SparkListView
             SparkRankingsView()
                 .tabItem {
-                    Label("Sparks", systemImage: selectedTab == 1 ? "sparkles" : "bolt.fill")
+                    Label("Sparks", systemImage: selectedTab == 1 ? "star.fill" : "star.fill")
                 }
                 .tag(1)
         }
