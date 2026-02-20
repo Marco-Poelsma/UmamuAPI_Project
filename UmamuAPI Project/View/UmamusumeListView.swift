@@ -116,12 +116,7 @@ struct UmamusumeListView: View {
                 }
             }
             .navigationTitle("Umamusume")
-            .navigationBarItems(
-                leading: Button("Edit") {
-                    print("Edit tapped")
-                }
-                .foregroundColor(.appBlue),
-                
+            .navigationBarItems(                
                 trailing: Button(action: {
                     activeSheet = .create
                 }) {
