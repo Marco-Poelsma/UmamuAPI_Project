@@ -75,7 +75,7 @@ class UmamusumeViewModel: ObservableObject {
 
     }
 
-    private func sortUmamusumes(_ list: [Umamusume], bySpark sparkID: Int? = nil) -> [Umamusume] {
+    func sortUmamusumes(_ list: [Umamusume], bySpark sparkID: Int? = nil) -> [Umamusume] {
         list.sorted { u1, u2 in
             // 1. Comparar estrellas del spark seleccionado (si existe)
             if let sparkID = sparkID {
@@ -92,7 +92,12 @@ class UmamusumeViewModel: ObservableObject {
                 return u1.isFavourite && !u2.isFavourite
             }
 
-            // 3. Finalmente, por ID ascendente
+            // 3. Por nombre en orden alfabético
+            if u1.name < u2.name {
+                return u1.name < u2.name
+            }
+            
+            // 4. Por ID ascendente
             return u1.id < u2.id
         }
     }
