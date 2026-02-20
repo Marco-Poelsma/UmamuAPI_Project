@@ -1,40 +1,13 @@
 import SwiftUI
 
 struct UmamusumePickerSheet: View {
-
+    // MARK: - Environment
     @Environment(\.presentationMode) private var presentationMode
-
-    let items: [Umamusume]
-    @Binding var selectedIDs: Set<Int>
-
-    let onSave: () -> Void
-    let onCancel: () -> Void
     
-    @State private var searchText = ""
-    @State private var showValidationAlert = false
-    @State private var validationMessage = ""
-
-    // MARK: - Filtering
-    var filteredItems: [Umamusume] {
-        if searchText.isEmpty {
-            return items
-        } else {
-            return items.filter {
-                $0.name.lowercased().contains(searchText.lowercased()) ||
-                String($0.id).contains(searchText)
-            }
-        }
-    }
+    // MARK: - ViewModel
+    @ObservedObject var viewModel: UmamusumePickerViewModel
     
-    // MARK: - Validation
-    private var isValid: Bool {
-        guard selectedIDs.count == 2 else {
-            validationMessage = "Debes seleccionar exactamente 2 umamusume"
-            return false
-        }
-        return true
-    }
-
+    // MARK: - Body
     var body: some View {
         ZStack {
             Color(UIColor.systemBackground)
@@ -46,49 +19,47 @@ struct UmamusumePickerSheet: View {
             }
         }
         .navigationBarTitle("Select Inspirations", displayMode: .inline)
-        .navigationBarItems(
-            leading: Button("Cancel") {
-                onCancel()
-                presentationMode.wrappedValue.dismiss()
-            },
-            trailing: Button("Save") {
-                if isValid {
-                    onSave()
-                    presentationMode.wrappedValue.dismiss()
-                } else {
-                    showValidationAlert = true
-                }
-            }
-        )
-        .alert(isPresented: $showValidationAlert) {
-            Alert(
-                title: Text("Selección inválida"),
-                message: Text(validationMessage),
-                dismissButton: .default(Text("OK"))
-            )
-        }
-        .onAppear {
-            UITableView.appearance().backgroundColor = .clear
-            UITableViewCell.appearance().backgroundColor = .clear
-            UITableViewHeaderFooterView.appearance().tintColor = .clear
-            UITableView.appearance().separatorStyle = .none
-            UITableView.appearance().separatorColor = .clear
-            UITableView.appearance().tableFooterView = UIView()
+        .navigationBarItems(leading: cancelButton, trailing: saveButton)
+        .alert(isPresented: $viewModel.showValidationAlert) { validationAlert }
+        .onAppear(perform: configureTableViewAppearance)
+    }
+    
+    // MARK: - Navigation Buttons
+    private var cancelButton: some View {
+        Button("Cancel") {
+            viewModel.cancel()
+            presentationMode.wrappedValue.dismiss()
         }
     }
     
-    // MARK: - Subviews
+    private var saveButton: some View {
+        Button("Save") {
+            if viewModel.validateAndSave() {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
+    }
+    
+    private var validationAlert: Alert {
+        Alert(
+            title: Text("Selección inválida"),
+            message: Text(viewModel.validationMessage),
+            dismissButton: .default(Text("OK"))
+        )
+    }
+    
+    // MARK: - Search Bar
     private var searchBar: some View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.gray)
             
-            TextField("Buscar umamusume...", text: $searchText)
+            TextField("Buscar umamusume...", text: $viewModel.searchText)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
             
-            if !searchText.isEmpty {
-                Button(action: { searchText = "" }) {
+            if !viewModel.searchText.isEmpty {
+                Button(action: viewModel.clearSearch) {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.gray)
                 }
@@ -102,19 +73,26 @@ struct UmamusumePickerSheet: View {
         .padding(.bottom, 4)
     }
     
+    // MARK: - Content List
     private var contentList: some View {
         VStack(spacing: 0) {
             List {
-                // Header como parte del contenido
                 sectionHeader
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 
-                // Filas filtradas
-                ForEach(Array(filteredItems.enumerated()), id: \.element.id) { index, item in
-                    umamusumeRow(item: item, index: index, category: filteredItems)
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
+                ForEach(Array(viewModel.filteredItems.enumerated()), id: \.element.id) { index, item in
+                    UmamusumeRowView(
+                        item: item,
+                        index: index,
+                        totalItems: viewModel.filteredItems.count,
+                        isSelected: viewModel.isSelected(item.id),
+                        onTap: {
+                            viewModel.toggleSelection(item.id)
+                        }
+                    )
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
                 }
             }
             .listStyle(PlainListStyle())
@@ -125,6 +103,7 @@ struct UmamusumePickerSheet: View {
         .padding(.bottom, 16)
     }
     
+    // MARK: - Section Header
     private var sectionHeader: some View {
         HStack {
             Text("UMAMUSUME")
@@ -134,14 +113,13 @@ struct UmamusumePickerSheet: View {
             
             Spacer()
             
-            Text("\(filteredItems.count) items")
+            Text("\(viewModel.filteredItems.count) items")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             
-            // Indicador de selección con color
-            Text("(\(selectedIDs.count)/2)")
+            Text("(\(viewModel.selectedCount)/2)")
                 .font(.caption)
-                .foregroundColor(selectedIDs.count == 2 ? .green : .red)
+                .foregroundColor(viewModel.selectionStatusColor)
                 .padding(.leading, 4)
         }
         .padding(.horizontal, 4)
@@ -150,27 +128,39 @@ struct UmamusumePickerSheet: View {
         .background(Color.white)
     }
     
-    // MARK: - Umamusume Row
-    private func umamusumeRow(item: Umamusume, index: Int, category: [Umamusume]) -> some View {
+    // MARK: - Helpers
+    private func configureTableViewAppearance() {
+        UITableView.appearance().backgroundColor = .clear
+        UITableViewCell.appearance().backgroundColor = .clear
+        UITableView.appearance().separatorStyle = .none
+        UITableView.appearance().separatorColor = .clear
+        UITableView.appearance().tableFooterView = UIView()
+    }
+}
+
+// MARK: - Umamusume Row View (con el estilo original)
+struct UmamusumeRowView: View {
+    let item: Umamusume
+    let index: Int
+    let totalItems: Int
+    let isSelected: Bool
+    let onTap: () -> Void
+    
+    var body: some View {
         VStack(spacing: 0) {
-            Button(action: {
-                toggleSelection(item.id)
-            }) {
+            Button(action: onTap) {
                 HStack {
-                    // ID
                     Text("\(item.id)")
                         .font(.headline)
                         .foregroundColor(.secondary)
                         .frame(width: 40, alignment: .leading)
                     
-                    // Nombre
                     Text(item.name)
                         .font(.body)
                         .foregroundColor(.primary)
                     
                     Spacer()
                     
-                    // Estrella de favorito (solo visual, NO es botón)
                     if item.isFavourite {
                         Image(systemName: "star.fill")
                             .font(.system(size: 14))
@@ -183,8 +173,7 @@ struct UmamusumePickerSheet: View {
                             .padding(.trailing, 8)
                     }
                     
-                    // Checkmark de selección
-                    if selectedIDs.contains(item.id) {
+                    if isSelected {
                         Image(systemName: "checkmark")
                             .foregroundColor(.white)
                             .padding(4)
@@ -200,31 +189,14 @@ struct UmamusumePickerSheet: View {
             }
             .buttonStyle(PlainButtonStyle())
             
-            if index < category.count - 1 {
+            if index < totalItems - 1 {
                 Divider()
                     .background(Color.gray.opacity(0.3))
                     .padding(.leading, 16)
             }
         }
         .background(Color(UIColor.secondarySystemFill))
-        .cornerRadius(
-            index == 0 ? 12 : 0,
-            corners: [.topLeft, .topRight]
-        )
-        .cornerRadius(
-            index == category.count - 1 ? 12 : 0,
-            corners: [.bottomLeft, .bottomRight]
-        )
-    }
-
-    // MARK: - Selection
-    private func toggleSelection(_ id: Int) {
-        if selectedIDs.contains(id) {
-            selectedIDs.remove(id)
-        } else {
-            if selectedIDs.count < 2 {
-                selectedIDs.insert(id)
-            }
-        }
+        .cornerRadius(index == 0 ? 12 : 0, corners: [.topLeft, .topRight])
+        .cornerRadius(index == totalItems - 1 ? 12 : 0, corners: [.bottomLeft, .bottomRight])
     }
 }
