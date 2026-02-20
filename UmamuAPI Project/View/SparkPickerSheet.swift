@@ -235,7 +235,7 @@ struct SparkPickerSheet: View {
         .padding(.horizontal, 4)
         .padding(.top, 8)
         .padding(.bottom, 4)
-        .background(Color.white)
+        .background(Color(UIColor.systemBackground))
     }
     
     private var aptitudeHeader: some View {
@@ -259,7 +259,7 @@ struct SparkPickerSheet: View {
         .padding(.horizontal, 4)
         .padding(.top, 8)
         .padding(.bottom, 4)
-        .background(Color.white)
+        .background(Color(UIColor.systemBackground))
     }
     
     private var skillHeader: some View {
@@ -278,7 +278,7 @@ struct SparkPickerSheet: View {
         .padding(.horizontal, 4)
         .padding(.top, 8)
         .padding(.bottom, 4)
-        .background(Color.white)
+        .background(Color(UIColor.systemBackground))
     }
     
     private var uniqueHeader: some View {
@@ -302,7 +302,7 @@ struct SparkPickerSheet: View {
         .padding(.horizontal, 4)
         .padding(.top, 8)
         .padding(.bottom, 4)
-        .background(Color.white)
+        .background(Color(UIColor.systemBackground))
     }
     
     // MARK: - Spark Row
@@ -320,7 +320,7 @@ struct SparkPickerSheet: View {
                     
                     if selectedIDs.contains(spark.id) {
                         Image(systemName: "checkmark")
-                            .foregroundColor(.white)
+                            .foregroundColor(Color(UIColor.systemBackground))
                             .padding(4)
                             .background(Color.blue)
                             .clipShape(Circle())
