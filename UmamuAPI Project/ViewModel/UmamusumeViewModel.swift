@@ -35,7 +35,7 @@ class UmamusumeViewModel: ObservableObject {
         print("⏰ Iniciando auto-refresh cada 5 segundos")
         
         // Usar Timer para actualizar cada 5 segundos
-        autoRefreshTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+        autoRefreshTimer = Timer.scheduledTimer(withTimeInterval: 30000.0, repeats: true) { [weak self] _ in
             guard let self = self, self.isAutoRefreshEnabled else { return }
             
             print("🔄 Auto-refresh: cargando datos de la API...")
@@ -65,7 +65,7 @@ class UmamusumeViewModel: ObservableObject {
     
     private func setupCombineRefresh() {
         // Alternativa usando Combine para más control
-        refreshCancellable = Timer.publish(every: 5.0, on: .main, in: .common)
+        refreshCancellable = Timer.publish(every: 30000.0, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self, self.isAutoRefreshEnabled else { return }
