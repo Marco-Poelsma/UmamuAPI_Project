@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct UmamusumeFormSheet: View {
-    // MARK: - Environment
     @Environment(\.presentationMode) private var presentationMode
     @ObservedObject var vm: UmamusumeFormViewModel
     
@@ -13,26 +12,11 @@ struct UmamusumeFormSheet: View {
     @State private var selectedInspirationIDs: Set<Int> = []
     @State private var isEditing: Bool = false
     
-    // MARK: - Body
     var body: some View {
         NavigationView {
             ZStack {
-                Color(UIColor.systemBackground)
-                    .ignoresSafeArea()
-                
-                VStack(spacing: 0) {
-                    List {
-                        nameSection
-                        sparksSection
-                        inspirationsSection
-                    }
-                    .listStyle(PlainListStyle())
-                    .background(Color.clear)
-                    .environment(\.defaultMinListRowHeight, 0)
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 16)
+                Color(UIColor.systemBackground).ignoresSafeArea()
+                mainContent
             }
             .navigationBarTitle(title, displayMode: .inline)
             .navigationBarItems(leading: leadingButton, trailing: trailingButton)
@@ -42,76 +26,178 @@ struct UmamusumeFormSheet: View {
         .onAppear(perform: onAppear)
     }
     
-    // MARK: - Sections
-    private var nameSection: some View {
-        Group {
-            SectionHeaderView(title: "NAME")
-            NameRowView(name: $vm.name, isDisabled: !isEditing && vm.mode == .view)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
+    // MARK: - Main Content
+    private var mainContent: some View {
+        VStack(spacing: 0) {
+            List {
+                nameSection
+                sparksSection
+                inspirationsSection
+            }
+            .listStyle(PlainListStyle())
+            .background(Color.clear)
+            .environment(\.defaultMinListRowHeight, 0)
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 16)
         }
     }
     
+    // MARK: - Name Section
+    private var nameSection: some View {
+        Group {
+            nameHeader
+            nameRow
+        }
+    }
+    
+    private var nameHeader: some View {
+        HStack {
+            Text("NAME").font(.title3).fontWeight(.bold).foregroundColor(.primary)
+            Spacer()
+        }
+        .padding(.horizontal, 4).padding(.top, 8).padding(.bottom, 4)
+        .background(Color.white)
+        .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+    }
+    
+    private var nameRow: some View {
+        VStack(spacing: 0) {
+            HStack {
+                TextField("Enter name", text: $vm.name)
+                    .disabled(!isEditing && vm.mode == .view)
+                    .padding(.vertical, 14).padding(.horizontal, 16)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .background(Color(UIColor.secondarySystemFill))
+        .cornerRadius(12)
+        .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+    }
+    
+    // MARK: - Sparks Section
     private var sparksSection: some View {
         Group {
             if !vm.selectedSparks.isEmpty || isEditing {
-                SectionHeaderView(title: "SPARKS", count: vm.selectedSparks.count)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                sparksHeader
             }
             
             if vm.selectedSparks.isEmpty && isEditing {
-                AddSparkRow(action: openSparkPicker)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                addSparkButton
             } else {
-                ForEach(vm.selectedSparks, id: \.id) { spark in
-                    SparkRowView(
-                        spark: spark,
-                        isEditing: isEditing,
-                        onRarityChange: { newRarity in
-                            updateSparkRarity(spark: spark, rarity: newRarity)
-                        }
-                    )
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                }
-                
+                sparksList
                 if isEditing {
-                    AddSparkRow(action: openSparkPicker)
-                        .padding(.top, vm.selectedSparks.isEmpty ? 0 : 8)
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
+                    addSparkButton
+                        .padding(.top, 8)
                 }
             }
         }
     }
     
+    private var sparksHeader: some View {
+        HStack {
+            Text("SPARKS").font(.title3).fontWeight(.bold).foregroundColor(.primary)
+            Spacer()
+            Text("\(vm.selectedSparks.count) items").font(.subheadline).foregroundColor(.secondary)
+        }
+        .padding(.horizontal, 4).padding(.top, 8).padding(.bottom, 4)
+        .background(Color.white)
+        .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+    }
+    
+    private var sparksList: some View {
+        ForEach(Array(vm.selectedSparks.enumerated()), id: \.element.id) { index, spark in
+            SparkItemView(
+                spark: spark,
+                index: index,
+                total: vm.selectedSparks.count,
+                isEditing: isEditing,
+                sparkByID: vm.sparkByID,
+                onRarityChange: { newRarity in
+                    if let idx = vm.selectedSparks.firstIndex(where: { $0.spark == spark.spark }) {
+                        vm.selectedSparks[idx].rarity = newRarity
+                    }
+                }
+            )
+            .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+        }
+    }
+    
+    private var addSparkButton: some View {
+        VStack(spacing: 0) {
+            Button(action: {
+                selectedSparkIDs = Set(vm.selectedSparks.map { $0.spark })
+                showSparkPicker = true
+            }) {
+                HStack {
+                    Text("Add Spark").font(.body).foregroundColor(.blue)
+                    Spacer()
+                    Image(systemName: "plus.circle.fill").foregroundColor(.blue).font(.system(size: 16))
+                }
+                .padding(.vertical, 14).padding(.horizontal, 16)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+        .background(Color(UIColor.secondarySystemFill))
+        .cornerRadius(12)
+        .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+    }
+    
+    // MARK: - Inspirations Section
     private var inspirationsSection: some View {
         Group {
-            SectionHeaderView(title: "INSPIRATIONS", count: vm.inspirationsCompact.count)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
+            inspirationsHeader
             
             if let i1 = vm.inspiration1 {
-                InspirationRowView(umamusume: i1)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                InspirationItemView(umamusume: i1)
+                    .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
             }
             
             if let i2 = vm.inspiration2 {
-                InspirationRowView(umamusume: i2)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                InspirationItemView(umamusume: i2)
+                    .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
             }
             
             if isEditing {
-                AddInspirationRow(action: openInspirationPicker)
+                addInspirationButton
                     .padding(.top, vm.inspirationsCompact.isEmpty ? 0 : 8)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
             }
         }
+    }
+    
+    private var inspirationsHeader: some View {
+        HStack {
+            Text("INSPIRATIONS").font(.title3).fontWeight(.bold).foregroundColor(.primary)
+            Spacer()
+            Text("\(vm.inspirationsCompact.count) items").font(.subheadline).foregroundColor(.secondary)
+        }
+        .padding(.horizontal, 4).padding(.top, 8).padding(.bottom, 4)
+        .background(Color.white)
+        .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+    }
+    
+    private var addInspirationButton: some View {
+        VStack(spacing: 0) {
+            Button(action: {
+                selectedInspirationIDs = Set(vm.inspirationsCompact.map { $0.id })
+                showInspirationPicker = true
+            }) {
+                HStack {
+                    Text("Add Inspirations").font(.body).foregroundColor(.blue)
+                    Spacer()
+                    Image(systemName: "plus.circle.fill").foregroundColor(.blue).font(.system(size: 16))
+                }
+                .padding(.vertical, 14).padding(.horizontal, 16)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+        .background(Color(UIColor.secondarySystemFill))
+        .cornerRadius(12)
+        .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
     }
     
     // MARK: - Navigation
@@ -137,20 +223,19 @@ struct UmamusumeFormSheet: View {
     private var sparkPickerLink: some View {
         NavigationLink(
             destination: SparkPickerSheet(
-                selectedIDs: $selectedSparkIDs,
-                onSave: {
-                    vm.selectedSparks = selectedSparkIDs.map {
-                        Umamusume.UmamusumeSpark(spark: $0, rarity: 1)
+                viewModel: SparkPickerViewModel(
+                    selectedIDs: $selectedSparkIDs,
+                    onSave: {
+                        vm.selectedSparks = selectedSparkIDs.map { Umamusume.UmamusumeSpark(spark: $0, rarity: 1) }
+                        showSparkPicker = false
+                    },
+                    onCancel: {
+                        showSparkPicker = false
                     }
-                    showSparkPicker = false
-                },
-                onCancel: {
-                    showSparkPicker = false
-                }
+                )
             ),
             isActive: $showSparkPicker
-        ) { EmptyView() }
-        .hidden()
+        ) { EmptyView() }.hidden()
     }
     
     private var inspirationPickerLink: some View {
@@ -158,7 +243,7 @@ struct UmamusumeFormSheet: View {
             destination: UmamusumePickerSheet(
                 viewModel: UmamusumePickerViewModel(
                     items: vm.umamusumeAll,
-                    selectedIDs: selectedInspirationIDs,
+                    selectedIDs: $selectedInspirationIDs,
                     onSave: {
                         vm.setInspirations(from: selectedInspirationIDs)
                         showInspirationPicker = false
@@ -169,24 +254,14 @@ struct UmamusumeFormSheet: View {
                 )
             ),
             isActive: $showInspirationPicker
-        ) { EmptyView() }
-        .hidden()
+        ) { EmptyView() }.hidden()
     }
     
-    // MARK: - Actions
-    private func openSparkPicker() {
-        selectedSparkIDs = Set(vm.selectedSparks.map { $0.spark })
-        showSparkPicker = true
-    }
-    
-    private func openInspirationPicker() {
-        selectedInspirationIDs = Set(vm.inspirationsCompact.map { $0.id })
-        showInspirationPicker = true
-    }
-    
-    private func updateSparkRarity(spark: Umamusume.UmamusumeSpark, rarity: Int) {
-        if let idx = vm.selectedSparks.firstIndex(where: { $0.spark == spark.spark }) {
-            vm.selectedSparks[idx].rarity = rarity
+    private var title: String {
+        switch vm.mode {
+        case .create: return "New Umamusume"
+        case .edit: return isEditing ? "Edit Umamusume" : "Umamusume"
+        case .view: return isEditing ? "Edit Umamusume" : "Umamusume"
         }
     }
     
@@ -200,73 +275,25 @@ struct UmamusumeFormSheet: View {
         UITableView.appearance().separatorColor = .clear
         UITableView.appearance().tableFooterView = UIView()
     }
-    
-    private var title: String {
-        switch vm.mode {
-        case .create: return "New Umamusume"
-        case .edit: return isEditing ? "Edit Umamusume" : "Umamusume"
-        case .view: return isEditing ? "Edit Umamusume" : "Umamusume"
-        }
-    }
 }
 
-// MARK: - Subvistas
-struct SectionHeaderView: View {
-    let title: String
-    var count: Int?
-    
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.title3)
-                .fontWeight(.bold)
-                .foregroundColor(.primary)
-            
-            Spacer()
-            
-            if let count = count {
-                Text("\(count) items")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-        }
-        .padding(.horizontal, 4)
-        .padding(.top, 8)
-        .padding(.bottom, 4)
-        .background(Color.white)
-    }
-}
-
-struct NameRowView: View {
-    @Binding var name: String
-    let isDisabled: Bool
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                TextField("Enter name", text: $name)
-                    .disabled(isDisabled)
-                    .padding(.vertical, 14)
-                    .padding(.horizontal, 16)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .background(Color(UIColor.secondarySystemFill))
-        .cornerRadius(12)
-    }
-}
-
-struct SparkRowView: View {
+// MARK: - Spark Item View
+struct SparkItemView: View {
     let spark: Umamusume.UmamusumeSpark
+    let index: Int
+    let total: Int
     let isEditing: Bool
+    let sparkByID: [Int: Spark]
     let onRarityChange: (Int) -> Void
     
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("\(spark.spark) - Spark \(spark.spark)")
-                    .font(.body)
-                    .foregroundColor(.primary)
+                if let sparkName = sparkByID[spark.spark]?.name {
+                    Text("\(spark.spark) - \(sparkName)").font(.body).foregroundColor(.primary)
+                } else {
+                    Text("\(spark.spark) - Spark \(spark.spark)").font(.body).foregroundColor(.primary)
+                }
                 
                 Spacer()
                 
@@ -283,90 +310,33 @@ struct SparkRowView: View {
                     }
                 }
             }
-            .padding(.vertical, 14)
-            .padding(.horizontal, 16)
+            .padding(.vertical, 14).padding(.horizontal, 16)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .background(Color(UIColor.secondarySystemFill))
-        .cornerRadius(8)
-    }
-}
-
-struct AddSparkRow: View {
-    let action: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            Button(action: action) {
-                HStack {
-                    Text("Add Spark")
-                        .font(.body)
-                        .foregroundColor(.blue)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "plus.circle.fill")
-                        .foregroundColor(.blue)
-                        .font(.system(size: 16))
-                }
-                .padding(.vertical, 14)
-                .padding(.horizontal, 16)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .contentShape(Rectangle())
+            
+            if index < total - 1 {
+                Divider().background(Color.gray.opacity(0.3)).padding(.leading, 16)
             }
-            .buttonStyle(PlainButtonStyle())
         }
         .background(Color(UIColor.secondarySystemFill))
-        .cornerRadius(12)
+        .cornerRadius(index == 0 ? 12 : 0, corners: [.topLeft, .topRight])
+        .cornerRadius(index == total - 1 ? 12 : 0, corners: [.bottomLeft, .bottomRight])
     }
 }
 
-struct InspirationRowView: View {
+// MARK: - Inspiration Item View
+struct InspirationItemView: View {
     let umamusume: Umamusume
     
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("\(umamusume.id) - \(umamusume.name)")
-                    .font(.body)
-                    .foregroundColor(.primary)
-                
+                Text("\(umamusume.id) - \(umamusume.name)").font(.body).foregroundColor(.primary)
                 Spacer()
             }
-            .padding(.vertical, 14)
-            .padding(.horizontal, 16)
+            .padding(.vertical, 14).padding(.horizontal, 16)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .background(Color(UIColor.secondarySystemFill))
         .cornerRadius(8)
-    }
-}
-
-struct AddInspirationRow: View {
-    let action: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            Button(action: action) {
-                HStack {
-                    Text("Add Inspirations")
-                        .font(.body)
-                        .foregroundColor(.blue)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "plus.circle.fill")
-                        .foregroundColor(.blue)
-                        .font(.system(size: 16))
-                }
-                .padding(.vertical, 14)
-                .padding(.horizontal, 16)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(PlainButtonStyle())
-        }
-        .background(Color(UIColor.secondarySystemFill))
-        .cornerRadius(12)
     }
 }

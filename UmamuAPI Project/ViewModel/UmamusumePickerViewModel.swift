@@ -4,9 +4,16 @@ import Combine
 class UmamusumePickerViewModel: ObservableObject {
     // MARK: - Published Properties
     @Published var searchText = ""
-    @Published var selectedIDs: Set<Int>
     @Published var showValidationAlert = false
     @Published var validationMessage = ""
+    
+    // MARK: - Binding
+    var selectedIDs: Binding<Set<Int>>
+    private var selectedIDsValue: Set<Int> {
+        didSet {
+            selectedIDs.wrappedValue = selectedIDsValue
+        }
+    }
     
     // MARK: - Dependencies
     private let items: [Umamusume]
@@ -27,11 +34,11 @@ class UmamusumePickerViewModel: ObservableObject {
     }
     
     var selectedCount: Int {
-        selectedIDs.count
+        selectedIDsValue.count
     }
     
     var isSelectionValid: Bool {
-        selectedIDs.count == 2
+        selectedIDsValue.count == 2
     }
     
     var selectionStatusColor: Color {
@@ -40,26 +47,27 @@ class UmamusumePickerViewModel: ObservableObject {
     
     // MARK: - Init
     init(items: [Umamusume],
-         selectedIDs: Set<Int>,
+         selectedIDs: Binding<Set<Int>>,
          onSave: @escaping () -> Void,
          onCancel: @escaping () -> Void) {
         self.items = items
         self.selectedIDs = selectedIDs
+        self.selectedIDsValue = selectedIDs.wrappedValue
         self.onSave = onSave
         self.onCancel = onCancel
     }
     
     // MARK: - Public Methods
     func toggleSelection(_ id: Int) {
-        if selectedIDs.contains(id) {
-            selectedIDs.remove(id)
-        } else if selectedIDs.count < 2 {
-            selectedIDs.insert(id)
+        if selectedIDsValue.contains(id) {
+            selectedIDsValue.remove(id)
+        } else if selectedIDsValue.count < 2 {
+            selectedIDsValue.insert(id)
         }
     }
     
     func isSelected(_ id: Int) -> Bool {
-        selectedIDs.contains(id)
+        selectedIDsValue.contains(id)
     }
     
     func validateAndSave() -> Bool {
