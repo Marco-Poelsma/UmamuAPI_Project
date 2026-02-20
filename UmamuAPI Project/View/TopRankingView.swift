@@ -24,19 +24,29 @@ struct TopRankingView: View {
         category.sparksSortedByID.first?.id
     }
     
+    // Filtrar umamusume que tienen el spark de 3 estrellas
+    private var umamusumeWithThreeStars: [Umamusume] {
+        guard let sparkID = activeSparkID else { return [] }
+        
+        return vm.umamusumes.filter { umamusume in
+            // Buscar si el umamusume tiene este spark con rarity 3
+            umamusume.sparks.contains { spark in
+                spark.spark == sparkID && spark.rarity == 3
+            }
+        }
+    }
+    
     var filteredUmamusumes: [Umamusume] {
-        let baseList: [Umamusume]
+        let baseList = umamusumeWithThreeStars
         
         if searchText.isEmpty {
-            baseList = vm.umamusumes
+            return baseList
         } else {
-            baseList = vm.umamusumes.filter {
+            return baseList.filter {
                 $0.name.lowercased().contains(searchText.lowercased()) ||
                 String($0.id).contains(searchText)
             }
         }
-        
-        return vm.sortUmamusumes(baseList, bySpark: activeSparkID)
     }
     
     var body: some View {
@@ -70,44 +80,69 @@ struct TopRankingView: View {
                 .padding(.horizontal, 8)
                 .padding(.vertical, 8)
                 
+                // Mostrar contador de resultados
+                HStack {
+                    Text("\(filteredUmamusumes.count) umamusume con ★★★")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 8)
+                    Spacer()
+                }
+                .padding(.bottom, 4)
+                
                 // Lista de Umamusumes
-                ScrollableListContainer(radius: radius) {
-                    ForEach(filteredUmamusumes) { u in
-                        VStack(spacing: 0) {
+                if filteredUmamusumes.isEmpty {
+                    VStack {
+                        Spacer()
+                        Image(systemName: "star.slash")
+                            .font(.system(size: 50))
+                            .foregroundColor(.gray)
+                        Text("No hay umamusume con 3 estrellas en esta categoría")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        Spacer()
+                    }
+                } else {
+                    ScrollableListContainer(radius: radius) {
+                        ForEach(filteredUmamusumes) { u in
                             VStack(spacing: 0) {
-                                
-                                Button(action: { activeSheet = .view(u) }) {
-                                    StyledRowView(
-                                        title: u.name,
-                                        id: u.id,
-                                        isFavorite: u.isFavourite,
-                                        showsFavorite: true,
-                                        accessory: .detailsWithFavorite,
-                                        onFavoriteTap: {
-                                            vm.toggleFavourite(for: u.id)
-                                        }
-                                    )
-                                    .padding(.vertical, 4)
-                                    .padding(.horizontal, 4)
+                                VStack(spacing: 0) {
+                                    
+                                    Button(action: { activeSheet = .view(u) }) {
+                                        StyledRowView(
+                                            title: u.name,
+                                            id: u.id,
+                                            isFavorite: u.isFavourite,
+                                            showsFavorite: true,
+                                            accessory: .detailsWithFavorite,
+                                            onFavoriteTap: {
+                                                vm.toggleFavourite(for: u.id)
+                                            }
+                                        )
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 4)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    
+                                    if !filteredUmamusumes.isLast(u) {
+                                        Divider()
+                                            .background(Color(UIColor.secondarySystemFill))
+                                            .padding(.leading, 12)
+                                            .padding(.trailing, 12)
+                                    }
                                 }
-                                .buttonStyle(PlainButtonStyle())
-                                
-                                if !filteredUmamusumes.isLast(u) {
-                                    Divider()
-                                        .background(Color(UIColor.secondarySystemFill))
-                                        .padding(.leading, 12)
-                                        .padding(.trailing, 12)
-                                }
+                                .background(Color(UIColor.secondarySystemFill))
+                                .cornerRadius(
+                                    filteredUmamusumes.isFirst(u) ? 20 : 0,
+                                    corners: [.topLeft, .topRight]
+                                )
+                                .cornerRadius(
+                                    filteredUmamusumes.isLast(u) ? 20 : 0,
+                                    corners: [.bottomLeft, .bottomRight]
+                                )
                             }
-                            .background(Color(UIColor.secondarySystemFill))
-                            .cornerRadius(
-                                filteredUmamusumes.isFirst(u) ? 20 : 0,
-                                corners: [.topLeft, .topRight]
-                            )
-                            .cornerRadius(
-                                filteredUmamusumes.isLast(u) ? 20 : 0,
-                                corners: [.bottomLeft, .bottomRight]
-                            )
                         }
                     }
                 }
