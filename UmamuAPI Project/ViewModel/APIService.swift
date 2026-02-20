@@ -46,7 +46,7 @@ struct APIService {
         urlString: String,
         completion: @escaping (Result<[Umamusume], Error>) -> Void
     ) {
-        guard let url = URL(string: urlString) else {
+        guard let url = URL(string: "https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/umamusume.data.json") else {
             completion(.failure(APIError.invalidURL))
             return
         }
@@ -126,51 +126,35 @@ struct APIService {
         _ umamusumes: [Umamusume],
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        print("📤 saveUmamusumes llamado con \(umamusumes.count) umamusumes")
+        // Verificar que NO estamos en el main thread para operaciones pesadas
+        dispatchPrecondition(condition: .notOnQueue(.main))
+        
+        print("📤 saveUmamusumes llamado con \(umamusumes.count) umamusumes en hilo: \(Thread.current)")
+        
         let response = UmamusumeResponse(properties: umamusumes)
         
         do {
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             let jsonData = try encoder.encode(response)
-            print("📦 JSON codificado: \(jsonData.count) bytes")
             
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                print("📋 JSON preview: \(jsonString.prefix(500))")
-            }
-            
-            let githubService = GitHubService.shared
-            activeGithubServices.append(githubService)
-            
-            print("🚀 Llamando a githubService.updateFile...")
-            
-            githubService.updateFile(
+            // GitHubService.shared.updateFile ya usa URLSession.dataTask (background)
+            GitHubService.shared.updateFile(
                 path: "data/umamusume.data.json",
                 with: jsonData,
                 commitMessage: "Update umamusume data via app - \(Date())"
             ) { result in
-                print("🔙 Completion handler de updateFile ejecutándose")
-                
-                defer {
-                    if let index = activeGithubServices.firstIndex(where: { $0 === githubService }) {
-                        activeGithubServices.remove(at: index)
-                        print("🗑️ Servicio liberado")
-                    }
-                }
-                
+                // Este completion puede venir de cualquier hilo
+                // Aseguramos que el completion final vaya al main si es necesario
                 switch result {
                 case .success:
-                    print("✅ Upload exitoso")
                     completion(.success(()))
-                    
                 case .failure(let error):
-                    print("❌ Upload falló: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }
             
         } catch {
-            print("❌ Error codificando JSON: \(error)")
             completion(.failure(error))
         }
     }

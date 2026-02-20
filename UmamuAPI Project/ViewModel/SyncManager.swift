@@ -12,10 +12,13 @@ class SyncManager: ObservableObject {
     
     // MARK: - Private Properties
     private var cancellables = Set<AnyCancellable>()
-    private let syncQueue = DispatchQueue(label: "com.app.syncmanager", qos: .utility)
     private var isSyncInProgress = false
-    private var pendingSyncs: [(type: SyncType, umamusumes: [Umamusume]?, sparks: [Spark]?, completion: ((Result<Void, Error>) -> Void)?)] = []
-    private let serialQueue = DispatchQueue(label: "com.app.syncmanager.serial", qos: .utility)
+    private var pendingSyncs: [(id: String, type: SyncType, umamusumes: [Umamusume]?, sparks: [Spark]?, completion: ((Result<Void, Error>) -> Void)?)] = []
+    private let syncQueue = DispatchQueue(label: "com.app.syncmanager.background",
+                                          qos: .background,
+                                          attributes: .concurrent)
+    private let serialQueue = DispatchQueue(label: "com.app.syncmanager.serial",
+                                            qos: .background)
     
     private init() {}
     
@@ -29,8 +32,9 @@ class SyncManager: ObservableObject {
     // MARK: - Public Methods
     
     func syncUmamusumes(_ umamusumes: [Umamusume], completion: ((Result<Void, Error>) -> Void)? = nil) {
+        let syncId = UUID().uuidString
         serialQueue.async { [weak self] in
-            self?.enqueueSync(type: .umamusumes, umamusumes: umamusumes, sparks: nil, completion: completion)
+            self?.enqueueSync(id: syncId, type: .umamusumes, umamusumes: umamusumes, sparks: nil, completion: completion)
         }
     }
     
@@ -50,8 +54,9 @@ class SyncManager: ObservableObject {
     }
     
     func syncSparks(_ sparks: [Spark], completion: ((Result<Void, Error>) -> Void)? = nil) {
+        let syncId = UUID().uuidString
         serialQueue.async { [weak self] in
-            self?.enqueueSync(type: .sparks, umamusumes: nil, sparks: sparks, completion: completion)
+            self?.enqueueSync(id: syncId, type: .sparks, umamusumes: nil, sparks: sparks, completion: completion)
         }
     }
     
@@ -88,8 +93,24 @@ class SyncManager: ObservableObject {
     
     // MARK: - Private Queue Management
     
-    private func enqueueSync(type: SyncType, umamusumes: [Umamusume]?, sparks: [Spark]?, completion: ((Result<Void, Error>) -> Void)?) {
-        pendingSyncs.append((type, umamusumes, sparks, completion))
+    private func enqueueSync(id: String, type: SyncType, umamusumes: [Umamusume]?, sparks: [Spark]?, completion: ((Result<Void, Error>) -> Void)?) {
+        // Verificar si ya hay una sincronización idéntica pendiente
+        let hasIdenticalPending = pendingSyncs.contains { existing in
+            existing.type == type &&
+            ((type == .umamusumes && existing.umamusumes?.count == umamusumes?.count) ||
+             (type == .sparks && existing.sparks?.count == sparks?.count))
+        }
+        
+        if !hasIdenticalPending {
+            pendingSyncs.append((id, type, umamusumes, sparks, completion))
+            print("📋 Sincronización encolada: \(type.rawValue) (ID: \(id.prefix(8)))")
+        } else {
+            print("⚠️ Sincronización idéntica ya en cola - ignorando")
+            DispatchQueue.main.async {
+                completion?(.success(()))
+            }
+        }
+        
         processNextSync()
     }
     
@@ -105,25 +126,30 @@ class SyncManager: ObservableObject {
             self.lastSyncType = nextSync.type
         }
         
-        performSync(type: nextSync.type,
-                   umamusumes: nextSync.umamusumes,
-                   sparks: nextSync.sparks) { [weak self] result in
-            nextSync.completion?(result)
-            
-            self?.serialQueue.async {
-                self?.isSyncInProgress = false
-                self?.processNextSync()
-            }
-            
-            DispatchQueue.main.async {
-                self?.isSyncing = false
-                switch result {
-                case .success:
-                    self?.lastSyncSuccess = Date()
-                    print("✅ \(nextSync.type.rawValue) sincronizados correctamente")
-                case .failure(let error):
-                    self?.lastSyncError = error
-                    print("❌ Error sincronizando \(nextSync.type.rawValue): \(error.localizedDescription)")
+        // Pequeño delay antes de procesar
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.performSync(
+                type: nextSync.type,
+                umamusumes: nextSync.umamusumes,
+                sparks: nextSync.sparks
+            ) { result in
+                nextSync.completion?(result)
+                
+                self?.serialQueue.async {
+                    self?.isSyncInProgress = false
+                    self?.processNextSync()
+                }
+                
+                DispatchQueue.main.async {
+                    self?.isSyncing = false
+                    switch result {
+                    case .success:
+                        self?.lastSyncSuccess = Date()
+                        print("✅ \(nextSync.type.rawValue) sincronizados correctamente")
+                    case .failure(let error):
+                        self?.lastSyncError = error
+                        print("❌ Error sincronizando \(nextSync.type.rawValue): \(error.localizedDescription)")
+                    }
                 }
             }
         }
@@ -135,6 +161,7 @@ class SyncManager: ObservableObject {
         
         print("🔄 Iniciando sincronización serial de \(type.rawValue)")
         
+        // VALIDACIÓN - esto SÍ puede ir en main porque es rápido
         if (type == .umamusumes && (umamusumes?.isEmpty ?? true)) ||
            (type == .sparks && (sparks?.isEmpty ?? true)) {
             let error = NSError(domain: "SyncManager", code: -2,
@@ -145,29 +172,35 @@ class SyncManager: ObservableObject {
             return
         }
         
-        let syncOperation: ( @escaping (Result<Void, Error>) -> Void) -> Void
-        
-        switch type {
-        case .umamusumes:
-            guard let umamusumes = umamusumes else { return }
-            syncOperation = { callback in
-                APIService.saveUmamusumes(umamusumes, completion: callback)
-            }
-        case .sparks:
-            guard let sparks = sparks else { return }
-            syncOperation = { callback in
-                APIService.saveSparks(sparks, completion: callback)
-            }
-        case .both:
-            return
-        }
-        
-        syncQueue.async {
-            syncOperation { result in
+        // Todo lo pesado va a background
+        syncQueue.async { [weak self] in
+            // Crear una estructura con los datos necesarios para evitar retain cycles
+            let datosSincronizacion: (type: SyncType, umamusumes: [Umamusume]?, sparks: [Spark]?)
+            datosSincronizacion = (type, umamusumes, sparks)
+            
+            // Ejecutar la operación pesada
+            self?.ejecutarOperacionPesada(datos: datosSincronizacion) { result in
+                // Volver al main solo para el completion
                 DispatchQueue.main.async {
                     completion?(result)
                 }
             }
+        }
+    }
+    private func ejecutarOperacionPesada(datos: (type: SyncType, umamusumes: [Umamusume]?, sparks: [Spark]?),
+                                         completion: @escaping (Result<Void, Error>) -> Void) {
+        
+        switch datos.type {
+        case .umamusumes:
+            guard let umamusumes = datos.umamusumes else { return }
+            APIService.saveUmamusumes(umamusumes, completion: completion)
+            
+        case .sparks:
+            guard let sparks = datos.sparks else { return }
+            APIService.saveSparks(sparks, completion: completion)
+            
+        case .both:
+            return
         }
     }
 }

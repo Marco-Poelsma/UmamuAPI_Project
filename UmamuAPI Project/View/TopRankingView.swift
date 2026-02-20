@@ -115,6 +115,25 @@ struct TopRankingView: View {
         }
         .navigationTitle(category.name)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .view(let u):
+                let formVM = UmamusumeFormViewModel(mode: .view, umamusume: u)
+                UmamusumeFormSheet(
+                    vm: formVM,
+                    onSave: { updated in
+                        vm.update(updated)
+                    },
+                    onSaveToAPI: { updated in
+                        vm.saveToAPI { success in
+                            if success {
+                                print("✅ Guardado en API exitoso desde TopRankingView")
+                            }
+                        }
+                    }
+                )
+            }
+        }
         .onAppear {
             vm.loadData()
             

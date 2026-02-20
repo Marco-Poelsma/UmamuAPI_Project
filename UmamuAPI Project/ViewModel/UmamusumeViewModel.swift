@@ -9,6 +9,7 @@ class UmamusumeViewModel: ObservableObject {
     
     private let syncManager = SyncManager.shared
     private var cancellables = Set<AnyCancellable>()
+    private var isSavingInProgress = false
     
     init() {
         syncManager.$isSyncing
@@ -118,14 +119,19 @@ class UmamusumeViewModel: ObservableObject {
     func saveToAPI(completion: ((Bool) -> Void)? = nil) {
         print("💾 Guardando \(umamusumes.count) umamusumes en API...")
         
-        guard !isSyncing else {
-            print("⚠️ Ya hay una sincronización en curso")
+        guard !isSyncing && !isSavingInProgress else {
+            print("⚠️ Ya hay una sincronización en curso - ignorando llamada")
             completion?(false)
             return
         }
         
-        syncManager.syncUmamusumes(umamusumes) { result in
+        isSavingInProgress = true
+        
+        // Esto ya está diseñado para ir a background automáticamente
+        syncManager.syncUmamusumes(umamusumes) { [weak self] result in
+            // Este completion puede venir de background, pero SyncManager ya lo lleva a main
             DispatchQueue.main.async {
+                self?.isSavingInProgress = false
                 switch result {
                 case .success:
                     print("✅ Umamusumes guardados en GitHub correctamente")
@@ -141,14 +147,17 @@ class UmamusumeViewModel: ObservableObject {
     func saveSparksToAPI(completion: ((Bool) -> Void)? = nil) {
         print("💾 Guardando \(sparks.count) sparks en API...")
         
-        guard !isSyncing else {
-            print("⚠️ Ya hay una sincronización en curso")
+        guard !isSyncing && !isSavingInProgress else {
+            print("⚠️ Ya hay una sincronización en curso - ignorando llamada")
             completion?(false)
             return
         }
         
-        syncManager.syncSparks(sparks) { result in
+        isSavingInProgress = true
+        
+        syncManager.syncSparks(sparks) { [weak self] result in
             DispatchQueue.main.async {
+                self?.isSavingInProgress = false
                 switch result {
                 case .success:
                     print("✅ Sparks guardados en GitHub correctamente")
