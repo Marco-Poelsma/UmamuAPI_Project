@@ -128,27 +128,50 @@ struct UmamusumeListView: View {
             )
         }
         .sheet(item: $activeSheet) { sheet in
-            switch sheet {
-            case .create:
-                UmamusumeFormSheet(
-                    vm: UmamusumeFormViewModel(mode: .create),
-                    onSave: { newUmamusume in
-                        vm.add(newUmamusume)
-                    }
-                )
-
-            case .view(let u):
-                UmamusumeFormSheet(
-                    vm: UmamusumeFormViewModel(mode: .view, umamusume: u),
-                    onSave: { updated in
-                        vm.update(updated)
-                    }
-                )
+            Group {
+                switch sheet {
+                case .create:
+                    let formVM = UmamusumeFormViewModel(mode: .create)
+                    UmamusumeFormSheet(
+                        vm: formVM,
+                        onSave: { newUmamusume in
+                            vm.add(newUmamusume)
+                        },
+                        onSaveToAPI: { updated in
+                            vm.saveToAPI { success in
+                                if success {
+                                    print("✅ Guardado en API exitoso")
+                                }
+                            }
+                        }
+                    )
+                    
+                case .view(let u):
+                    let formVM = UmamusumeFormViewModel(mode: .view, umamusume: u)
+                    UmamusumeFormSheet(
+                        vm: formVM,
+                        onSave: { updated in
+                            vm.update(updated)
+                        },
+                        onSaveToAPI: { updated in
+                            vm.saveToAPI { success in
+                                if success {
+                                    print("✅ Guardado en API exitoso")
+                                }
+                            }
+                        }
+                    )
+                }
             }
         }
         .onAppear {
             vm.loadData()
-
+            
+            // Verificar token al iniciar (opcional)
+            GitHubService.shared.verifyToken { isValid, message in
+                print("🔐 Token GitHub: \(message)")
+            }
+            
             UITableView.appearance().backgroundColor = .clear
             UITableViewCell.appearance().backgroundColor = .clear
             UITableViewHeaderFooterView.appearance().tintColor = .clear

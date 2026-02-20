@@ -26,6 +26,9 @@
 		EF7C79EC2F3A28FB00CE5664 /* SparkPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79EB2F3A28FB00CE5664 /* SparkPickerSheet.swift */; };
 		EF7C79EF2F3A291900CE5664 /* UmamusumePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */; };
 		EF7C79F72F3A3C2400CE5664 /* StarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79F62F3A3C2400CE5664 /* StarButton.swift */; };
+		EF92EE382F48B43F000B126D /* GitHubService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE372F48B43F000B126D /* GitHubService.swift */; };
+		EF92EE3B2F48B45B000B126D /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE3A2F48B45B000B126D /* SyncManager.swift */; };
+		EF92EE3F2F48B77D000B126D /* GitHubConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE3E2F48B77D000B126D /* GitHubConfig.swift */; };
 		EFB5EFEA2F1E7906008F0849 /* Umamusume.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFE92F1E7906008F0849 /* Umamusume.swift */; };
 		EFB5EFED2F1E791C008F0849 /* Spark.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFEC2F1E791C008F0849 /* Spark.swift */; };
 		EFB5EFF52F1E823E008F0849 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB5EFF42F1E823E008F0849 /* APIService.swift */; };
@@ -61,6 +64,9 @@
 		EF7C79EB2F3A28FB00CE5664 /* SparkPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkPickerSheet.swift; sourceTree = "<group>"; };
 		EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumePickerSheet.swift; sourceTree = "<group>"; };
 		EF7C79F62F3A3C2400CE5664 /* StarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarButton.swift; sourceTree = "<group>"; };
+		EF92EE372F48B43F000B126D /* GitHubService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubService.swift; sourceTree = "<group>"; };
+		EF92EE3A2F48B45B000B126D /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
+		EF92EE3E2F48B77D000B126D /* GitHubConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubConfig.swift; sourceTree = "<group>"; };
 		EFB5EFE92F1E7906008F0849 /* Umamusume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Umamusume.swift; sourceTree = "<group>"; };
 		EFB5EFEC2F1E791C008F0849 /* Spark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spark.swift; sourceTree = "<group>"; };
 		EFB5EFF42F1E823E008F0849 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
@@ -109,6 +115,7 @@
 				EFB5EFE62F1E786F008F0849 /* Model */,
 				EF3026942F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift */,
 				EF3026962F1E75FA00C74085 /* ContentView.swift */,
+				EF92EE3E2F48B77D000B126D /* GitHubConfig.swift */,
 				EF3026982F1E75FB00C74085 /* Assets.xcassets */,
 				EF30269D2F1E75FB00C74085 /* Info.plist */,
 				EF30269A2F1E75FB00C74085 /* Preview Content */,
@@ -132,6 +139,7 @@
 				EFB5F0102F1E94F4008F0849 /* UmamusumeResponse.swift */,
 				EFB5F0172F1E95FA008F0849 /* SparkResponse.swift */,
 				EF7C79E22F3A288B00CE5664 /* UmamusumeFormMode.swift */,
+				EF92EE372F48B43F000B126D /* GitHubService.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -167,6 +175,7 @@
 				EF7C79F62F3A3C2400CE5664 /* StarButton.swift */,
 				EFF348D52F485A6200C5E917 /* UmamusumePickerViewModel.swift */,
 				EFF348DC2F4865A200C5E917 /* SparkPickerViewModel.swift */,
+				EF92EE3A2F48B45B000B126D /* SyncManager.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -246,6 +255,8 @@
 				EF7C79E92F3A28D300CE5664 /* UmamusumeFormSheet.swift in Sources */,
 				EF3026952F1E75FA00C74085 /* UmamuAPI_ProjectApp.swift in Sources */,
 				EF7C79EF2F3A291900CE5664 /* UmamusumePickerSheet.swift in Sources */,
+				EF92EE3B2F48B45B000B126D /* SyncManager.swift in Sources */,
+				EF92EE382F48B43F000B126D /* GitHubService.swift in Sources */,
 				EFF348D62F485A6200C5E917 /* UmamusumePickerViewModel.swift in Sources */,
 				EF7C79E32F3A288B00CE5664 /* UmamusumeFormMode.swift in Sources */,
 				EFF348DD2F4865A200C5E917 /* SparkPickerViewModel.swift in Sources */,
@@ -254,6 +265,7 @@
 				EF7C79F72F3A3C2400CE5664 /* StarButton.swift in Sources */,
 				EF7C79E62F3A28AA00CE5664 /* UmamusumeFormViewModel.swift in Sources */,
 				EFDC66952F478C61002D1C6E /* TopRankingView.swift in Sources */,
+				EF92EE3F2F48B77D000B126D /* GitHubConfig.swift in Sources */,
 				EF15F87D2F30FDE000E9498B /* Array+Identifiable.swift in Sources */,
 				EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */,
 				EF15D3202F27BCFD000BDEC8 /* StyledRowView.swift in Sources */,

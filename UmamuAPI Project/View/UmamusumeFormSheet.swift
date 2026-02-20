@@ -5,18 +5,29 @@ struct UmamusumeFormSheet: View {
     @ObservedObject var vm: UmamusumeFormViewModel
     
     let onSave: (Umamusume) -> Void
+    let onSaveToAPI: (Umamusume) -> Void
     
     @State private var showSparkPicker = false
     @State private var showInspirationPicker = false
     @State private var selectedSparkIDs: Set<Int> = []
     @State private var selectedInspirationIDs: Set<Int> = []
     @State private var isEditing: Bool = false
+    @State private var isSaving = false
     
     var body: some View {
         NavigationView {
             ZStack {
                 Color(UIColor.systemBackground).ignoresSafeArea()
+                
+                if isSaving {
+                    ProgressView("Saving...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .scaleEffect(1.5)
+                }
+                
                 mainContent
+                    .opacity(isSaving ? 0.3 : 1)
+                    .disabled(isSaving)
             }
             .navigationBarTitle(title, displayMode: .inline)
             .navigationBarItems(leading: leadingButton, trailing: trailingButton)
@@ -205,19 +216,18 @@ struct UmamusumeFormSheet: View {
         Button(isEditing ? "Cancel" : "Close") {
             presentationMode.wrappedValue.dismiss()
         }
+        .disabled(isSaving)
     }
     
     private var trailingButton: some View {
         Button(isEditing ? "Save" : "Edit") {
             if isEditing {
-                let updated = vm.toUmamusume()
-                onSave(updated)
-                presentationMode.wrappedValue.dismiss()
+                saveChanges()
             } else {
                 isEditing = true
             }
         }
-        .disabled(!vm.canSave)
+        .disabled(!vm.canSave || isSaving)
     }
     
     private var sparkPickerLink: some View {
@@ -238,21 +248,17 @@ struct UmamusumeFormSheet: View {
     
     // MARK: - Helper Methods
     private func updateSelectedSparks() {
-        // Convertir Set<Int> a [Umamusume.UmamusumeSpark]
         let newSparks = selectedSparkIDs.map { id in
             Umamusume.UmamusumeSpark(spark: id, rarity: 1)
         }
         
-        // Mantener las rarezas existentes para los sparks que ya estaban seleccionados
         let existingSparks = vm.selectedSparks
         var updatedSparks: [Umamusume.UmamusumeSpark] = []
         
         for newSpark in newSparks {
             if let existing = existingSparks.first(where: { $0.spark == newSpark.spark }) {
-                // Mantener la rareza existente
                 updatedSparks.append(existing)
             } else {
-                // Nuevo spark con rareza por defecto
                 updatedSparks.append(newSpark)
             }
         }
@@ -296,6 +302,19 @@ struct UmamusumeFormSheet: View {
         UITableView.appearance().separatorStyle = .none
         UITableView.appearance().separatorColor = .clear
         UITableView.appearance().tableFooterView = UIView()
+    }
+    
+    private func saveChanges() {
+        let updatedUmamusume = vm.toUmamusume()
+        
+        onSave(updatedUmamusume)
+        
+        isSaving = true
+        onSaveToAPI(updatedUmamusume)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.presentationMode.wrappedValue.dismiss()
+        }
     }
 }
 

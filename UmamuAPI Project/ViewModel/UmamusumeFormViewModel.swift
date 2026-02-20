@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 class UmamusumeFormViewModel: ObservableObject {
 
@@ -18,8 +19,11 @@ class UmamusumeFormViewModel: ObservableObject {
 
     @Published var umamusumeAll: [Umamusume] = []
     @Published var sparkAll: [Spark] = []
-
+    @Published var isSyncing = false
+    
+    private let syncManager = SyncManager.shared
     private var originalIsFavourite: Bool = false
+    private var cancellables = Set<AnyCancellable>()
 
     var inspirationsCompact: [Umamusume] {
         var list: [Umamusume] = []
@@ -58,9 +62,12 @@ class UmamusumeFormViewModel: ObservableObject {
             self.selectedSparks = u.sparks
             self.inspirationID1 = u.inspirationID1
             self.inspirationID2 = u.inspirationID2
-
             self.originalIsFavourite = u.isFavourite
         }
+        
+        // Observar estado de sincronización
+        syncManager.$isSyncing
+            .assign(to: &$isSyncing)
     }
 
     func loadData() {
@@ -71,10 +78,10 @@ class UmamusumeFormViewModel: ObservableObject {
     private func loadUmamusumes() {
         APIService.fetchUmamusumes(
             urlString: "https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/umamusume.data.json"
-        ) { result in
+        ) { [weak self] result in
             if case let .success(data) = result {
                 DispatchQueue.main.async {
-                    self.umamusumeAll = data
+                    self?.umamusumeAll = data
                 }
             }
         }
@@ -83,10 +90,10 @@ class UmamusumeFormViewModel: ObservableObject {
     private func loadSparks() {
         APIService.fetchSparks(
             urlString: "https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/spark.data.json"
-        ) { result in
+        ) { [weak self] result in
             if case let .success(data) = result {
                 DispatchQueue.main.async {
-                    self.sparkAll = data
+                    self?.sparkAll = data
                 }
             }
         }
@@ -109,5 +116,25 @@ class UmamusumeFormViewModel: ObservableObject {
             inspirationID2: inspirationID2 ?? 0,
             isFavourite: originalIsFavourite
         )
+    }
+    
+    func saveToAPI(completion: @escaping (Bool) -> Void) {
+        let umamusume = toUmamusume()
+        print("hello biches - guardando umamusume: \(umamusume.name)")
+        
+        // Post notification for local update
+        if mode == .create {
+            NotificationCenter.default.post(
+                name: NSNotification.Name("AddUmamusume"),
+                object: umamusume
+            )
+        } else {
+            NotificationCenter.default.post(
+                name: NSNotification.Name("UpdateUmamusume"),
+                object: umamusume
+            )
+        }
+        
+        completion(true)
     }
 }

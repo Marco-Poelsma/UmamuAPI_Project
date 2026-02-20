@@ -115,17 +115,6 @@ struct TopRankingView: View {
         }
         .navigationTitle(category.name)
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $activeSheet) { sheet in
-            switch sheet {
-            case .view(let u):
-                UmamusumeFormSheet(
-                    vm: UmamusumeFormViewModel(mode: .view, umamusume: u),
-                    onSave: { updated in
-                        vm.update(updated)
-                    }
-                )
-            }
-        }
         .onAppear {
             vm.loadData()
             
