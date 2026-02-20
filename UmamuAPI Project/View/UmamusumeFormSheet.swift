@@ -161,14 +161,9 @@ struct UmamusumeFormSheet: View {
         Group {
             inspirationsHeader
             
-            if let i1 = vm.inspiration1 {
-                InspirationItemView(umamusume: i1)
-                    .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
-            }
-            
-            if let i2 = vm.inspiration2 {
-                InspirationItemView(umamusume: i2)
-                    .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+            // Mostrar las inspiraciones seleccionadas con el mismo estilo que sparks
+            if !vm.inspirationsCompact.isEmpty {
+                inspirationsList
             }
             
             if isEditing {
@@ -187,6 +182,18 @@ struct UmamusumeFormSheet: View {
         .padding(.horizontal, 4).padding(.top, 8).padding(.bottom, 4)
         .background(Color(UIColor.clear))
         .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+    }
+    
+    // Nueva lista de inspiraciones con el mismo estilo que sparksList
+    private var inspirationsList: some View {
+        ForEach(Array(vm.inspirationsCompact.enumerated()), id: \.element.id) { index, umamusume in
+            InspirationItemView(
+                umamusume: umamusume,
+                index: index,
+                total: vm.inspirationsCompact.count
+            )
+            .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+        }
     }
     
     private var addInspirationButton: some View {
@@ -365,9 +372,11 @@ struct SparkItemView: View {
     }
 }
 
-// MARK: - Inspiration Item View
+// MARK: - Inspiration Item View (MEJORADA)
 struct InspirationItemView: View {
     let umamusume: Umamusume
+    let index: Int
+    let total: Int
     
     var body: some View {
         VStack(spacing: 0) {
@@ -377,8 +386,18 @@ struct InspirationItemView: View {
             }
             .padding(.vertical, 14).padding(.horizontal, 16)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            // Añadir divisor si no es el último elemento
+            if index < total - 1 {
+                Divider().background(Color(UIColor.secondarySystemFill)).padding(.leading, 16)
+            }
         }
         .background(Color(UIColor.secondarySystemFill))
-        .cornerRadius(8)
+        // Aplicar cornerRadius condicional basado en la posición
+        .cornerRadius(index == 0 ? 12 : 0, corners: [.topLeft, .topRight])
+        .cornerRadius(index == total - 1 ? 12 : 0, corners: [.bottomLeft, .bottomRight])
     }
 }
+
+// MARK: - Extension for rounded corners (si no existe ya)
+
