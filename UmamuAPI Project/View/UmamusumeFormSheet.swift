@@ -68,7 +68,7 @@ struct UmamusumeFormSheet: View {
             Spacer()
         }
         .padding(.horizontal, 4).padding(.top, 8).padding(.bottom, 4)
-        .background(Color.white)
+        .background(Color(UIColor.clear))
         .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
     }
     
@@ -112,7 +112,7 @@ struct UmamusumeFormSheet: View {
             Text("\(vm.selectedSparks.count) items").font(.subheadline).foregroundColor(.secondary)
         }
         .padding(.horizontal, 4).padding(.top, 8).padding(.bottom, 4)
-        .background(Color.white)
+        .background(Color(UIColor.clear))
         .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
     }
     
@@ -185,7 +185,7 @@ struct UmamusumeFormSheet: View {
             Text("\(vm.inspirationsCompact.count) items").font(.subheadline).foregroundColor(.secondary)
         }
         .padding(.horizontal, 4).padding(.top, 8).padding(.bottom, 4)
-        .background(Color.white)
+        .background(Color(UIColor.clear))
         .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
     }
     
@@ -355,7 +355,7 @@ struct SparkItemView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             if index < total - 1 {
-                Divider().background(Color.gray.opacity(0.3)).padding(.leading, 16)
+                Divider().background(Color(UIColor.secondarySystemFill)).padding(.leading, 16)
             }
         }
         .background(Color(UIColor.secondarySystemFill))

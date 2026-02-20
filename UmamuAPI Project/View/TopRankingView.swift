@@ -94,7 +94,7 @@ struct TopRankingView: View {
                                 
                                 if !filteredUmamusumes.isLast(u) {
                                     Divider()
-                                        .background(Color.gray.opacity(0.6))
+                                        .background(Color(UIColor.secondarySystemFill))
                                         .padding(.leading, 12)
                                         .padding(.trailing, 12)
                                 }
