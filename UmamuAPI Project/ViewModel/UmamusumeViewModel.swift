@@ -15,6 +15,7 @@ class UmamusumeViewModel: ObservableObject {
     private var autoRefreshTimer: Timer?
     private var refreshCancellable: AnyCancellable?
     
+    
     init() {
         syncManager.$isSyncing
             .assign(to: &$isSyncing)

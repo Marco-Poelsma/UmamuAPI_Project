@@ -27,6 +27,7 @@
 		EF7C79EF2F3A291900CE5664 /* UmamusumePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */; };
 		EF7C79F72F3A3C2400CE5664 /* StarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7C79F62F3A3C2400CE5664 /* StarButton.swift */; };
 		EF9159602F48CDE0007DCB49 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF91595F2F48CDE0007DCB49 /* Color.swift */; };
+		EF9159642F48DA3A007DCB49 /* DataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9159632F48DA3A007DCB49 /* DataCache.swift */; };
 		EF92EE382F48B43F000B126D /* GitHubService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE372F48B43F000B126D /* GitHubService.swift */; };
 		EF92EE3B2F48B45B000B126D /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE3A2F48B45B000B126D /* SyncManager.swift */; };
 		EF92EE3F2F48B77D000B126D /* GitHubConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92EE3E2F48B77D000B126D /* GitHubConfig.swift */; };
@@ -66,6 +67,7 @@
 		EF7C79EE2F3A291900CE5664 /* UmamusumePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmamusumePickerSheet.swift; sourceTree = "<group>"; };
 		EF7C79F62F3A3C2400CE5664 /* StarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarButton.swift; sourceTree = "<group>"; };
 		EF91595F2F48CDE0007DCB49 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		EF9159632F48DA3A007DCB49 /* DataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCache.swift; sourceTree = "<group>"; };
 		EF92EE372F48B43F000B126D /* GitHubService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubService.swift; sourceTree = "<group>"; };
 		EF92EE3A2F48B45B000B126D /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
 		EF92EE3E2F48B77D000B126D /* GitHubConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubConfig.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				EFF348D52F485A6200C5E917 /* UmamusumePickerViewModel.swift */,
 				EFF348DC2F4865A200C5E917 /* SparkPickerViewModel.swift */,
 				EF92EE3A2F48B45B000B126D /* SyncManager.swift */,
+				EF9159632F48DA3A007DCB49 /* DataCache.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				EF7C79F72F3A3C2400CE5664 /* StarButton.swift in Sources */,
 				EF7C79E62F3A28AA00CE5664 /* UmamusumeFormViewModel.swift in Sources */,
 				EFDC66952F478C61002D1C6E /* TopRankingView.swift in Sources */,
+				EF9159642F48DA3A007DCB49 /* DataCache.swift in Sources */,
 				EF92EE3F2F48B77D000B126D /* GitHubConfig.swift in Sources */,
 				EF15F87D2F30FDE000E9498B /* Array+Identifiable.swift in Sources */,
 				EFB5F0112F1E94F4008F0849 /* UmamusumeResponse.swift in Sources */,

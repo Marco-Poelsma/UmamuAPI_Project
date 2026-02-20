@@ -270,10 +270,11 @@ struct UmamusumeFormSheet: View {
         NavigationLink(
             destination: UmamusumePickerSheet(
                 viewModel: UmamusumePickerViewModel(
-                    items: vm.umamusumeAll,
+                    // USAR LA CACHÉ en lugar de vm.umamusumeAll
+                    items: DataCache.shared.cachedUmamusumes,
                     selectedIDs: $selectedInspirationIDs,
-                    onSave: {
-                        vm.setInspirations(from: selectedInspirationIDs)
+                    onSave: { selectedIDs in
+                        vm.setInspirations(from: selectedIDs)
                         showInspirationPicker = false
                     },
                     onCancel: {
