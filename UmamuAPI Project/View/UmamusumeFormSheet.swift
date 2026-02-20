@@ -223,19 +223,41 @@ struct UmamusumeFormSheet: View {
     private var sparkPickerLink: some View {
         NavigationLink(
             destination: SparkPickerSheet(
-                viewModel: SparkPickerViewModel(
-                    selectedIDs: $selectedSparkIDs,
-                    onSave: {
-                        vm.selectedSparks = selectedSparkIDs.map { Umamusume.UmamusumeSpark(spark: $0, rarity: 1) }
-                        showSparkPicker = false
-                    },
-                    onCancel: {
-                        showSparkPicker = false
-                    }
-                )
+                selectedIDs: $selectedSparkIDs,
+                onSave: {
+                    updateSelectedSparks()
+                    showSparkPicker = false
+                },
+                onCancel: {
+                    showSparkPicker = false
+                }
             ),
             isActive: $showSparkPicker
         ) { EmptyView() }.hidden()
+    }
+    
+    // MARK: - Helper Methods
+    private func updateSelectedSparks() {
+        // Convertir Set<Int> a [Umamusume.UmamusumeSpark]
+        let newSparks = selectedSparkIDs.map { id in
+            Umamusume.UmamusumeSpark(spark: id, rarity: 1)
+        }
+        
+        // Mantener las rarezas existentes para los sparks que ya estaban seleccionados
+        let existingSparks = vm.selectedSparks
+        var updatedSparks: [Umamusume.UmamusumeSpark] = []
+        
+        for newSpark in newSparks {
+            if let existing = existingSparks.first(where: { $0.spark == newSpark.spark }) {
+                // Mantener la rareza existente
+                updatedSparks.append(existing)
+            } else {
+                // Nuevo spark con rareza por defecto
+                updatedSparks.append(newSpark)
+            }
+        }
+        
+        vm.selectedSparks = updatedSparks
     }
     
     private var inspirationPickerLink: some View {

@@ -12,7 +12,9 @@ class SparkPickerViewModel: ObservableObject {
     var selectedIDs: Binding<Set<Int>>
     private var selectedIDsValue: Set<Int> {
         didSet {
-            selectedIDs.wrappedValue = selectedIDsValue
+            if selectedIDsValue != oldValue {
+                selectedIDs.wrappedValue = selectedIDsValue
+            }
         }
     }
     
@@ -20,23 +22,13 @@ class SparkPickerViewModel: ObservableObject {
     private let onSave: () -> Void
     private let onCancel: () -> Void
     
-    // MARK: - Init
-    init(selectedIDs: Binding<Set<Int>>,
-         onSave: @escaping () -> Void,
-         onCancel: @escaping () -> Void) {
-        self.selectedIDs = selectedIDs
-        self.selectedIDsValue = selectedIDs.wrappedValue
-        self.onSave = onSave
-        self.onCancel = onCancel
-    }
-    
     // MARK: - Computed Properties
     var filteredSparks: [Spark] {
         if searchText.isEmpty {
             return sparks
         } else {
             return sparks.filter {
-                $0.name.localizedCaseInsensitiveContains(searchText)
+                $0.name.lowercased().contains(searchText.lowercased())
             }
         }
     }
@@ -69,6 +61,18 @@ class SparkPickerViewModel: ObservableObject {
         sparks.filter { selectedIDsValue.contains($0.id) && $0.type == .uniqueSkill }
     }
     
+    var statSelectionColor: Color {
+        selectedStats.count == 1 ? .green : .red
+    }
+    
+    var aptitudeSelectionColor: Color {
+        selectedAptitudes.count == 1 ? .green : .red
+    }
+    
+    var uniqueSelectionColor: Color {
+        selectedUniqueSkills.count <= 3 ? .green : .red
+    }
+    
     var isSelectionValid: Bool {
         guard selectedStats.count == 1 else {
             validationMessage = "Debes seleccionar exactamente 1 spark de Stat"
@@ -88,16 +92,14 @@ class SparkPickerViewModel: ObservableObject {
         return true
     }
     
-    var statSelectionColor: Color {
-        selectedStats.count == 1 ? .green : .red
-    }
-    
-    var aptitudeSelectionColor: Color {
-        selectedAptitudes.count == 1 ? .green : .red
-    }
-    
-    var uniqueSelectionColor: Color {
-        selectedUniqueSkills.count <= 3 ? .green : .red
+    // MARK: - Init
+    init(selectedIDs: Binding<Set<Int>>,
+         onSave: @escaping () -> Void,
+         onCancel: @escaping () -> Void) {
+        self.selectedIDs = selectedIDs
+        self.selectedIDsValue = selectedIDs.wrappedValue
+        self.onSave = onSave
+        self.onCancel = onCancel
     }
     
     // MARK: - Public Methods
@@ -130,6 +132,7 @@ class SparkPickerViewModel: ObservableObject {
     func clearSearch() {
         searchText = ""
     }
+    
     
     func loadSparks() {
         APIService.fetchSparks(
