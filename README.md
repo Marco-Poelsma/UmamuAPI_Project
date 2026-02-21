@@ -1,4 +1,4 @@
-[El vídeo explicativo del proyecto se puede encontrar en Youtube](https://youtu.be/n_ej3iBJVik)
+[El vídeo explicativo del proyecto se puede encontrar en Youtube](https://youtu.be/2n87f7D0D7I)
 
 [Link al JSON de la API de sparks](https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/spark.data.json)
 
@@ -144,4 +144,129 @@ En el desarrollo del proyecto, se ha usado la arquitectura MVVM para mantener un
     └── project.pbxproj
 ```
 
+## Instrucciones de uso
+
+A continuación se describen los pasos principales para utilizar UmamuAPI correctamente.
+
+### Favoritos y persistencia
+
+Desde la lista principal puedes marcar cualquier uma musume como favorita.
+
+Las favoritas se priorizan automáticamente en el orden de visualización.
+
+Los favoritos se mantienen guardados incluso si:
+
+- Se reinicia la aplicación.
+
+- Se reinicia el emulador de Xcode.
+
+La aplicación es compatible con modo claro y modo oscuro.
+
+### Crear una Umamusume
+
+Accede a la vista de creación (sheet superpuesta).
+
+Introduce un nombre.
+
+Selecciona los sparks necesarios.
+
+Requisitos obligatorios para guardar:
+
+Mínimo:
+
+- 1 spark de tipo stat
+
+- 1 spark de tipo aptitude
+
+Máximo:
+
+- 1 spark de tipo stat
+
+- 1 spark de tipo aptitude
+
+Los demás sparks son opcionales.
+
+Cada spark debe tener entre 1 y 3 estrellas.
+
+No se permite 0 estrellas.
+
+El botón Save permanecerá deshabilitado hasta que se cumplan todos los requisitos mínimos.
+
+### Selección de Sparks
+
+Existe una barra de búsqueda para encontrar sparks rápidamente.
+
+Se puede modificar el número de estrellas antes de guardar.
+
+Los cambios pueden editarse posteriormente desde la vista de edición.
+
+### Inspiraciones
+
+Es obligatorio seleccionar exactamente 2 inspiraciones.
+
+No se puede guardar si:
+
+- Hay menos de 2 inspiraciones.
+
+- Se intenta seleccionar más de 2.
+
+La interfaz muestra avisos cuando no se cumplen los requisitos.
+
+Se pueden seleccionar y deseleccionar antes de guardar.
+
+### Editar una Umamusume
+
+Desde la vista de edición se puede:
+
+- Modificar el nombre.
+
+- Cambiar sparks y número de estrellas.
+
+- Cambiar inspiraciones.
+
+- Eliminar la uma musume.
+
+La vista de edición reutiliza el mismo diseño que la vista de creación.
+
+### Eliminar una Umamusume
+
+Existen dos métodos:
+
+- Deslizar completamente hacia la izquierda.
+
+- Deslizar parcialmente y pulsar el botón Delete.
+
+### Rankings
+
+Los rankings están disponibles para sparks de tipo:
+
+- Stat
+
+- Aptitude
+
+Se muestran las uma musume con 3 estrellas en el spark seleccionado.
+
+Se mantiene el sistema de búsqueda dentro del ranking.
+
+Si no hay resultados, se muestra un placeholder informativo.
+
+### Búsqueda
+
+Disponible en todas las vistas principales.
+
+Permite buscar por:
+
+- Nombre
+
+- ID (PK)
+
+La búsqueda funciona por coincidencia parcial de texto.
+
+### Compatibilidad
+
+- Compatible con modo vertical y horizontal.
+
+- Soporte completo para modo claro y oscuro.
+
+- Persistencia de datos tras reinicios.
 
