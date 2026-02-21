@@ -1,6 +1,9 @@
-[El vídeo explicativo del proyecto se puede encontrar en Youtube](https://youtu.be/n_ej3iBJVik).
+[El vídeo explicativo del proyecto se puede encontrar en Youtube](https://youtu.be/n_ej3iBJVik)
+
 [Link al JSON de la API de sparks](https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/spark.data.json)
+
 [Link al JSON de la API de umamusume](https://raw.githubusercontent.com/Marco-Poelsma/UmamuAPI/refs/heads/master/data/umamusume.data.json)
+
 
 # UmamuAPI
 
