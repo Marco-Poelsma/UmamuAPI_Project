@@ -18,8 +18,7 @@ Los sparks pueden ser de cuatro tipos:
 
 >[!NOTE]
 >Cada personaje debe contar, como mínimo, con un spark de atributo y un spark de aptitud.
-
-La inspiración se basa en dos generaciones anteriores (madres y abuelas). Una uma musume puede ser su propia abuela, pero no su propia madre.
+>La inspiración se basa en dos generaciones anteriores (madres y abuelas). Una uma musume puede ser su propia abuela, pero no su propia madre.
 
 ## Objetivo de la Aplicación
 
